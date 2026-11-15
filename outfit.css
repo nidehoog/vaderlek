@@ -1,7 +1,7 @@
 #outfitView { display:none }
 body[data-view="influencer"] #outfitView { display:block; text-align:center; color:#211339 }
 body[data-view="influencer"] .shell > :not(.header):not(#outfitView),
-body[data-view="influencer"] .headright > :not(.citySelect):not(.nearestCity):not(.viewSelector):not(.sr) { display:none!important }
+body[data-view="influencer"] .headright > :not(.citySelect):not(.nearestCity):not(.roundButton):not(.viewSelector):not(.sr) { display:none!important }
 body[data-view="influencer"] .headright { width:100%; justify-content:center }
 body[data-view="influencer"] .headright select { font-size:clamp(16px,4vw,30px); min-height:48px; max-width:42vw }
 .outfitCard { display:grid; justify-items:center; align-content:center; min-height:78svh; padding:28px 8px; margin:12px 0; border-radius:32px; background:linear-gradient(145deg,#ffe785,#ffaebd 65%,#c1adff) }
@@ -22,3 +22,15 @@ body[data-view="influencer"] .headright select { font-size:clamp(16px,4vw,30px);
  body .shell > #nearestStatus:not(:empty) {display:block!important;padding:6px 12px;text-align:center;font-size:14px}
  .locationPrivacy {display:block;max-width:42em;margin:16px auto;padding:0 16px calc(90px + env(safe-area-inset-bottom));font-size:14px;line-height:1.45;text-align:center;color:var(--ink)}
 }
+.legacyTool {display:none}
+.header .headright {width:100%;justify-content:flex-start}
+.header .headright #dnsToggle {margin-left:0}
+.header .headright #refresh {order:0}
+body[data-view] .shell > #dnsPanel:not([hidden]) {display:block!important}
+body[data-view="netscape"] .header .headright {display:grid;grid-template-columns:repeat(4, minmax(0, 8rem));justify-content:start!important;gap:4px!important}
+body[data-view="netscape"] .header .headright :is(.roundButton,.nearestCity,.citySelect,.viewSelector select) {width:100%;min-width:0;max-width:none;height:46px;min-height:46px;margin:0;padding:3px;box-sizing:border-box;border:2px outset #ececec;border-radius:0;background:#c5c5c5;color:#161616;font: bold 13px Arial,sans-serif;box-shadow:none}
+body[data-view="netscape"] .header .headright .viewSelector {display:block;border:0;padding:0;margin:0;min-width:0;width:100%;font-size:0}
+body[data-view="netscape"] .legacyTool {display:inline;color:#112b65}
+body[data-view="netscape"] .headright button svg {display:none}
+body[data-view="netscape"] .headright button:active {border-style:inset}
+@media(max-width:680px){body[data-view="netscape"] .header .headright {grid-template-columns:repeat(3,minmax(0,8rem))}}
