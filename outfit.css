@@ -35,3 +35,5 @@ body[data-view="netscape"] .headright button svg {display:none}
 body[data-view="netscape"] .headright button:active {border-style:inset}
 body[data-view="netscape"] .header .headright > :is(.roundButton,.nearestCity,.citySelect,.viewSelector) {flex:0 0 min(8rem,calc(50% - 4px));min-width:0}
 body:is([data-view="netscape"],[data-view="influencer"]) #dnsToggle,body:is([data-view="netscape"],[data-view="influencer"]) .shell > #dnsPanel:not([hidden]){display:none!important}
+body[data-view="netscape"] .shell {padding-top:calc(18px + env(safe-area-inset-top,0px))}
+.legacyWeatherEmoji {font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif;font-variant-emoji:emoji;font-size:1.25em;vertical-align:middle}
