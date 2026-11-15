@@ -1,4 +1,4 @@
-const cacheName = 'vader-2.9.5-shell-v3';
+const cacheName = 'vader-2.9.5-shell-v4';
 const files = ['index.html', 'outfit.js', 'outfit.css', 'manifest.webmanifest', 'icon-180.png', 'icon-192.png', 'icon-512.png'];
 const assets = files.map(file => new URL(file, self.registration.scope).href);
 self.addEventListener('install', event => {

@@ -84,6 +84,24 @@
         card.querySelector('.outfitAdvice').textContent=shortAdvice(data);
       }).catch(()=>{if(!signal.aborted) card.querySelector('.outfitAdvice').textContent='Klädråd saknas';});
     });
+    const calendar = document.createElement('article');
+    calendar.className = 'outfitCard outfitCalendar';
+    calendar.innerHTML = '<span>Idag är det</span><h2></h2><span>Vecka</span><strong></strong><span>Dagens namnsdagar</span><b aria-live="polite">…</b>';
+    cards.append(calendar);
+    const weekday = new Intl.DateTimeFormat('sv-SE',{timeZone:place.tz,weekday:'long'}).format(now);
+    calendar.querySelector('h2').textContent = weekday[0].toUpperCase() + weekday.slice(1);
+    // The Thursday of an ISO week determines its week-year.
+    const thursday = new Date(date + 'T00:00:00Z');
+    thursday.setUTCDate(thursday.getUTCDate() + 4 - (thursday.getUTCDay() || 7));
+    const yearStart = Date.UTC(thursday.getUTCFullYear(), 0, 1);
+    calendar.querySelector('strong').textContent = Math.floor((thursday - yearStart) / 604800000) + 1;
+    const names = calendar.querySelector('b');
+    read('https://sholiday.faboul.se/dagar/v2.1/' + date.replaceAll('-', '/'), signal)
+      .then(data => {
+        const day = data.dagar.find(entry => entry.datum === date);
+        names.textContent = day.namnsdag.filter(Boolean).join(', ') || 'Ingen namnsdag';
+      })
+      .catch(() => { if (!signal.aborted) names.textContent = 'Kunde inte hämtas'; });
   }
   document.querySelector('#citySelect').addEventListener('change',render);
   document.querySelector('#viewMode').addEventListener('change',render);
