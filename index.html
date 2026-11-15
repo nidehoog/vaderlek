@@ -10,8 +10,8 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="format-detection" content="telephone=no">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='15' fill='%231c678c'/%3E%3Ccircle cx='22' cy='23' r='11' fill='%23f7d36d'/%3E%3Cpath d='M19 50h29a10 10 0 0 0 1-20A16 16 0 0 0 18 33a9 9 0 0 0 1 17' fill='white'/%3E%3C/svg%3E">
-<link rel="apple-touch-icon" href="./icon-180.png">
+<link rel="icon" type="image/png" href="./vadergungan-192.png">
+<link rel="apple-touch-icon" href="./vadergungan-180.png">
 <link rel="manifest" href="./manifest.webmanifest">
 <script>
 if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) {
@@ -697,7 +697,7 @@ body[data-view="netscape"] #netscapeLegacy #legacyNow{white-space:pre-line;line-
 /* Väder 2.9.5: Text-TV finns endast för svenska orter. */
 #teletextSection[hidden],.appTabbar a[href="#teletextSection"][hidden],#netscapeLegacy li[hidden]{display:none!important}
 </style>
-<link rel="stylesheet" href="./outfit.css?v=2.10.1"></head>
+<link rel="stylesheet" href="./outfit.css?v=2.12.0"></head>
 <body>
 <!-- All CSS, JS och app-/länkikoner finns i HTML-filen. Enbart live-data och molnbilder hämtas från nätet. -->
 <svg aria-hidden="true" class="sr" xmlns="http://www.w3.org/2000/svg"><defs>
@@ -719,8 +719,8 @@ body[data-view="netscape"] #netscapeLegacy #legacyNow{white-space:pre-line;line-
   <symbol id="i-cloud" viewBox="0 0 24 24"><path d="M6 19a5 5 0 0 1-.2-10A7 7 0 0 1 19 11a4 4 0 0 1-.8 8Z" fill="none" stroke="currentColor" stroke-width="1.6"/></symbol>
 </defs></svg>
 <div class="shell">
-  <header class="header" id="top"><div class="headright"><button class="roundButton" id="dnsToggle" type="button" title="Reservskydd" aria-label="Reservskydd" aria-controls="dnsPanel" aria-expanded="false" ><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg><span class="legacyTool" aria-hidden="true">🛡️ Reservskydd</span></button><button class="roundButton" id="refresh" title="Uppdatera prognosen" aria-label="Uppdatera prognosen"><svg><use href="#i-refresh"/></svg><span class="legacyTool" aria-hidden="true">🔄 Uppdatera</span></button><button id="nearestCity" class="nearestCity" type="button" title="Hitta närmaste ort" aria-label="Hitta närmaste ort"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2" fill="currentColor"/><path d="M12 1v4m0 14v4M1 12h4m14 0h4"/></svg><span class="legacyTool" aria-hidden="true">🧭 Plats</span></button><label class="sr" for="citySelect">Välj ort</label><select id="citySelect" class="citySelect" aria-label="Välj ort"></select><label class="viewSelector" for="viewMode">Visning <select id="viewMode" aria-label="Visningsläge"><option value="standard">Modernt</option><option value="netscape">Netscape</option><option value="influencer">Influencer</option></select></label><div class="themePicker" role="group" aria-label="Sidans dag- och nattläge"><button type="button" class="themeOption" data-theme-option="auto" aria-pressed="true">◐ Auto</button><button type="button" class="themeOption" data-theme-option="day" aria-pressed="false">☀ Dag</button><button type="button" class="themeOption" data-theme-option="night" aria-pressed="false">☾ Natt</button></div></div></header>
-<div id="nearestStatus" role="status" aria-live="polite"></div><section id="outfitView" aria-label="Väder och kläder"><div id="outfitCards"></div><a class="jetRadar" href="https://www.celebplanes.com/map" target="_blank" rel="noopener noreferrer">🛩️ Kändisradar</a><small class="versionStamp">Väderlek 2.11.0</small></section><section id="netscapeLegacy" hidden aria-label="Avskalad Netscape-visning av vädret">
+  <header class="header" id="top"><div class="headright"><button class="roundButton" id="dnsToggle" type="button" title="Reservskydd" aria-label="Reservskydd" aria-controls="dnsPanel" aria-expanded="false" ><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg><span class="legacyTool" aria-hidden="true">Reservskydd</span></button><button class="roundButton" id="refresh" title="Uppdatera prognosen" aria-label="Uppdatera prognosen"><svg><use href="#i-refresh"/></svg><span class="legacyTool" aria-hidden="true">Uppdatera</span></button><button id="nearestCity" class="nearestCity" type="button" title="Hitta närmaste ort" aria-label="Hitta närmaste ort"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2" fill="currentColor"/><path d="M12 1v4m0 14v4M1 12h4m14 0h4"/></svg><span class="legacyTool" aria-hidden="true">Plats</span></button><label class="sr" for="citySelect">Välj ort</label><select id="citySelect" class="citySelect" aria-label="Välj ort"></select><label class="viewSelector" for="viewMode"><select id="viewMode" aria-label="Visningsläge"><option value="standard">Modernt</option><option value="netscape">Netscape</option><option value="influencer">Influencer</option></select></label><div class="themePicker" role="group" aria-label="Sidans dag- och nattläge"><button type="button" class="themeOption" data-theme-option="auto" aria-pressed="true">◐ Auto</button><button type="button" class="themeOption" data-theme-option="day" aria-pressed="false">☀ Dag</button><button type="button" class="themeOption" data-theme-option="night" aria-pressed="false">☾ Natt</button></div></div></header>
+<div id="nearestStatus" role="status" aria-live="polite"></div><section id="outfitView" aria-label="Väder och kläder"><div id="outfitCards"></div><a class="jetRadar" href="https://www.celebplanes.com/map" target="_blank" rel="noopener noreferrer">🛩️ Kändisradar</a><small class="versionStamp">Väderlek 2.12.0</small></section><section id="netscapeLegacy" hidden aria-label="Avskalad Netscape-visning av vädret">
   <h2 id="legacyPlace">Örebro</h2>
   <div id="legacyNow">Aktuellt väder hämtas ...</div>
   <hr>
@@ -739,7 +739,7 @@ body[data-view="netscape"] #netscapeLegacy #legacyNow{white-space:pre-line;line-
     <li><a href="https://texttv.nu/" target="_blank" rel="noopener noreferrer">Text-TV</a></li>
     <li><a href="https://earth.google.com/" target="_blank" rel="noopener noreferrer" id="legacyEarthLink">Google earth</a></li>
   </ul>
-  <hr><p>Väderlek 2.11.0 · Uppdaterad 15 november 2026</p>
+  <hr><p>Väderlek 2.12.0 · Uppdaterad 15 november 2026</p>
 </section>
 <section id="dnsPanel" class="dnsMini" aria-label="Reservskydd" hidden>
   <span aria-hidden="true">🛡</span>
@@ -895,7 +895,7 @@ body[data-view="netscape"] #netscapeLegacy #legacyNow{white-space:pre-line;line-
   </section>
   <nav class="appTabbar" aria-label="Snabbnavigering"><a href="#now"><span>☀</span>Nu</a><a href="#cloudAside" id="cloudNavLink"><span>☁</span>Moln</a><a href="#weatherLayout"><span>▤</span>3 dygn</a><a href="#longSection"><span>▦</span>14 dygn</a><a href="#cameraSection" id="cameraNavLink"><span>📷</span>Kameror</a><a href="#resourcesSection"><span>↗</span>Länkar</a></nav>
 
-  <footer class="bottom"><div class="footerLinks"><span><span id="obsFooterLabel">Observation: <a href="https://metars.eu/" target="_blank" rel="noopener noreferrer">METAR</a> / <a href="https://www.smhi.se/" target="_blank" rel="noopener noreferrer">SMHI</a> · </span><span id="modeledFooterLabel" hidden>Aktuellt: <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Open-Meteo</a> (modell) · </span>Prognoser: <a href="https://www.smhi.se/" target="_blank" rel="noopener noreferrer">SMHI</a> och <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Open-Meteo</a> (flera modeller) · <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer">UKMO: CC BY-SA 4.0</a></span><span class="versionStamp"> · Väderlek 2.11.0 · Uppdaterad 15 november 2026</span></div></footer>
+  <footer class="bottom"><div class="footerLinks"><span><span id="obsFooterLabel">Observation: <a href="https://metars.eu/" target="_blank" rel="noopener noreferrer">METAR</a> / <a href="https://www.smhi.se/" target="_blank" rel="noopener noreferrer">SMHI</a> · </span><span id="modeledFooterLabel" hidden>Aktuellt: <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Open-Meteo</a> (modell) · </span>Prognoser: <a href="https://www.smhi.se/" target="_blank" rel="noopener noreferrer">SMHI</a> och <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Open-Meteo</a> (flera modeller) · <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer">UKMO: CC BY-SA 4.0</a></span><span class="versionStamp"> · Väderlek 2.12.0 · Uppdaterad 15 november 2026</span></div></footer>
 </div>
 <script>
 'use strict';
@@ -2193,8 +2193,6 @@ function updateTeleTicker(rows,page,rawPlain){
   let title=block.join(' ').replace(/\s+/g,' ').trim();
   title=title.replace(/(?:\s+1\d\d(?:\/\d\d\d)?)+\s*$/,'').trim();
   if(Number.isInteger(dest)&&dest>=101&&dest<=199&&title.length>=9&&/\p{L}/u.test(title)&&!isNav(title)){
-   const preferred=block.find(t=>t.length>=16&&!isNav(t));
-   if(preferred)title=preferred.replace(/(?:\s+1\d\d(?:\/\d\d\d)?)+\s*$/,'').trim();
    candidates.push({text:title,page:dest});
   }
   block=[];lastPage=null;
@@ -2234,9 +2232,10 @@ function updateTeleTicker(rows,page,rawPlain){
   if(block.length>12)block.shift(); // Inte en gräns på antalet nyhetsrubriker.
   if(lastPage&&block.length>=1&&(matrix[i+1]?.text===''||matrix[i+1]?.text?.startsWith('Inrikes')))push(lastPage);
  }
+ if(block.length && lastPage)push(lastPage);
  const seenTitles=new Set();
  const headlines=candidates.filter(item=>{
-  const key=item.text.toLocaleLowerCase('sv-SE');if(seenTitles.has(key))return false;
+  const key=item.text.toLocaleLowerCase('sv-SE')+'|'+(item.page||item.pageLabel);if(seenTitles.has(key))return false;
   seenTitles.add(key);return true;
  });
  // Ingen gräns på fem: alla rubriker som faktiskt finns på sida 100 visas.
@@ -2245,7 +2244,7 @@ function updateTeleTicker(rows,page,rawPlain){
  const buttons=[];
  for(const item of headlines){
   const button=document.createElement('button');button.type='button';button.className='teleHeadline';
-  const title=document.createElement('span');title.textContent=item.text;
+  const title=document.createElement('span');title.textContent=item.text.length>64?item.text.slice(0,63).trimEnd()+'…':item.text;title.title=item.text;
   const num=document.createElement('small');num.textContent=item.pageLabel||item.page||'—';
   button.append(title,num);button.title=Number.isInteger(item.page)?'Öppna Text-TV sida '+item.page:'Välj artikel i sidintervallet '+item.pageLabel;
   button.addEventListener('click',()=>{if(Number.isInteger(item.page))teleOpenHeadlinePage(item.page);else teleChooseHeadlineRange(item,target)});
@@ -2813,14 +2812,15 @@ resetHistoryForPlace();
  window.renderNetscape=function(){
   const container=document.getElementById('netscapeLegacy');if(!container||container.hidden)return;
   document.getElementById('legacyPlace').textContent=PLACE.name;
+  const retroWeather=text=>{const mark=/åsk/i.test(text)?' /!/':/snö/i.test(text)?' * * *':/regn|skur|duggregn/i.test(text)?' ///':/moln|mulet/i.test(text)?' (~~)':/sol|klart/i.test(text)?' \\|/':/dimma/i.test(text)?' ~~~':'';return text+mark;};
   const current=(document.getElementById('heroTemp')?.textContent||'—');
   document.getElementById('legacyNow').textContent= 'Lokal tid: '+(document.getElementById('localTime')?.textContent||'—')+' ('+(document.getElementById('localZoneInfo')?.textContent||'')+')\n'+
-   ' · Temperatur: '+current+' · '+(document.getElementById('heroText')?.textContent||'—')+' · Vind: '+(document.getElementById('heroWind')?.textContent||'—');
+   ' · Temperatur: '+current+' · '+retroWeather(document.getElementById('heroText')?.textContent||'—')+' · Vind: '+(document.getElementById('heroWind')?.textContent||'—');
   const sources=shortSources(),dateKeys=tomorrowDates();
   let html='<div class="legacyScroller"><table class="legacyTable" border="1" cellpadding="3" cellspacing="2"><thead><tr><th>Dag</th><th>Tid</th>'+sources.map(x=>'<th>'+esc(x.name)+'</th>').join('')+'</tr></thead><tbody>';
   for(let d=0;d<3;d++)for(let n=0;n<6;n++){
    const hour=n*4;html+='<tr><td>'+esc(niceDay(dateKeys[d],d))+'</td><td>'+String(hour).padStart(2,'0')+'–'+String(hour+4).padStart(2,'0')+'</td>'+
-    sources.map(src=>'<td>'+esc(oneLine(sampleForSlot(datasets[src.id],dateKeys[d],hour)))+'</td>').join('')+'</tr>';
+    sources.map(src=>'<td>'+esc(retroWeather(oneLine(sampleForSlot(datasets[src.id],dateKeys[d],hour))))+'</td>').join('')+'</tr>';
   }
   document.getElementById('legacyForecast').innerHTML=html+'</tbody></table></div>';
   const days=next14Dates();

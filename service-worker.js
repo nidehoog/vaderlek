@@ -1,5 +1,5 @@
-const cacheName = 'vaderlek-2.11.0-shell-v1';
-const files = ['index.html', 'nearest.js', 'outfit.js', 'outfit.css?v=2.10.1', 'manifest.webmanifest', 'icon-180.png', 'icon-192.png', 'icon-512.png'];
+const cacheName = 'vaderlek-2.12.0-shell-v1';
+const files = ['index.html', 'nearest.js', 'outfit.js', 'outfit.css?v=2.12.0', 'manifest.webmanifest', 'vadergungan-180.png', 'vadergungan-192.png', 'vadergungan-512.png'];
 const assets = files.map(file => new URL(file, self.registration.scope).href);
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(cacheName).then(cache => cache.addAll(assets)));

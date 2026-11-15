@@ -34,3 +34,4 @@ body[data-view="netscape"] .legacyTool {display:inline;color:#112b65}
 body[data-view="netscape"] .headright button svg {display:none}
 body[data-view="netscape"] .headright button:active {border-style:inset}
 @media(max-width:680px){body[data-view="netscape"] .header .headright {grid-template-columns:repeat(3,minmax(0,8rem))}}
+body:is([data-view="netscape"],[data-view="influencer"]) #dnsToggle,body:is([data-view="netscape"],[data-view="influencer"]) .shell > #dnsPanel:not([hidden]){display:none!important}
