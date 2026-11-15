@@ -352,7 +352,7 @@ body[data-view="car"] .modelButton{min-height:40px}
 @media(max-width:960px){.cameraGrid{gap:9px}.cameraTitle{font-size:12px}}
 @media(max-width:750px){.cameraGrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.cameraHead h2{font-size:21px}.cameraInfo{padding:9px;min-height:70px}.cameraTitle{font-size:11px}.cameraDirection{font-size:10px}.cameraExpand{font-size:15px}.cameraRefresh{padding:9px 11px}}
 @media(max-width:400px){.cameraGrid{gap:7px}.cameraTitle{font-size:10.5px}.cameraHead{align-items:center}.cameraHead p{font-size:10px}.cameraRefresh{font-size:10px;padding:7px 9px}.cameraModalTitle{font-size:14px}}
-@media(max-width:680px){.viewSelector{font-size:0}.viewSelector:before{content:'🚘';font-size:15px}.viewSelector select{max-width:100px;font-size:11px;min-width:90px}}
+@media(max-width:680px){.viewSelector{font-size:0}.viewSelector select{max-width:100px;font-size:11px;min-width:90px}}
 @media(prefers-reduced-motion:reduce){.cameraImageWrap img{transition:none}}
 
 
@@ -828,7 +828,7 @@ body[data-view="netscape"] #netscapeLegacy #legacyNow{white-space:pre-line;line-
     <div class="cameraModalFoot"><p id="cameraModalNote">Bilden kan uppdateras.</p><button type="button" id="cameraModalRefresh">↻ Hämta ny bild</button><a id="cameraModalSource" href="#" target="_blank" rel="noopener noreferrer">Öppna original ↗</a></div>
   </dialog>
 
-  <section class="resourcesSection" aria-labelledby="resourcesTitle">
+  <section id="resourcesSection" class="resourcesSection" aria-labelledby="resourcesTitle">
     <div class="sectionHead"><div><h2 id="resourcesTitle">Mer väder, kameror & trafik</h2><p>Öppnas utanför Väder, i webbläsaren</p></div></div>
     <div class="resourceGrid">
       <a class="resourceLink" href="https://www.windy.com/" target="_blank" rel="noopener noreferrer" aria-label="Öppna Windy i ny flik"><span class="resourceLogo" style="--fallback:#c91d3d" aria-hidden="true">🌬️</span><span class="resourceText"><strong>Windy</strong><small>Öppna webbplats ↗</small></span><span class="resourceArrow" aria-hidden="true">↗</span></a>
@@ -893,7 +893,7 @@ body[data-view="netscape"] #netscapeLegacy #legacyNow{white-space:pre-line;line-
       <div class="installWhat"><h3>Vad betyder PWA?</h3><p><strong>PWA (Progressive Web App)</strong> är en webbplats som kan bete sig som en app, till exempel med en egen ikon, app-liknande fönster och ibland stöd för offlineanvändning. <strong>Den här versionen ligger medvetet i en enda HTML-fil.</strong> Den kan läggas på hemskärmen men är inte en fullständig offline-PWA, eftersom separat manifest och service worker saknas. Den behöver dessutom internet för aktuella väderprognoser, bilder och Text-TV.</p><p><strong>Dator:</strong> Publicera på HTTPS, öppna adressen i webbläsaren och spara som bokmärke. Du behöver ingen appinstallation.</p></div>
     </div>
   </section>
-  <nav class="appTabbar" aria-label="Snabbnavigering"><a href="#now"><span>☀</span>Nu</a><a href="#weatherLayout"><span>▤</span>3 dygn</a><a href="#longSection"><span>▦</span>14 dygn</a><a href="#cloudAside" id="cloudNavLink"><span>☁</span>Moln</a><a href="#cameraSection" id="cameraNavLink"><span>📷</span>Kameror</a><a href="#teletextSection"><span>▣</span>Text-TV</a></nav>
+  <nav class="appTabbar" aria-label="Snabbnavigering"><a href="#now"><span>☀</span>Nu</a><a href="#cloudAside" id="cloudNavLink"><span>☁</span>Moln</a><a href="#weatherLayout"><span>▤</span>3 dygn</a><a href="#longSection"><span>▦</span>14 dygn</a><a href="#cameraSection" id="cameraNavLink"><span>📷</span>Kameror</a><a href="#resourcesSection"><span>↗</span>Länkar</a></nav>
 
   <footer class="bottom"><div class="footerLinks"><span><span id="obsFooterLabel">Observation: <a href="https://metars.eu/" target="_blank" rel="noopener noreferrer">METAR</a> / <a href="https://www.smhi.se/" target="_blank" rel="noopener noreferrer">SMHI</a> · </span><span id="modeledFooterLabel" hidden>Aktuellt: <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Open-Meteo</a> (modell) · </span>Prognoser: <a href="https://www.smhi.se/" target="_blank" rel="noopener noreferrer">SMHI</a> och <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Open-Meteo</a> (flera modeller) · <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer">UKMO: CC BY-SA 4.0</a></span><span class="versionStamp"> · Väder 2.9.5 · Genererad 15 november 2026</span></div></footer>
 </div>
@@ -1714,7 +1714,7 @@ installBtn.addEventListener('click',()=>{const guide=$('installGuide');guide.hid
 // Väder 2.2 – nio kameror för Örebro. Bildkällor kommer från Trafikverket,
 // den uppladdade Ånnaboda-sidan och användarens YouTube-länk.
 const OREBRO_CAMERAS=[
- {id:'yt70',title:'70 livekameror – världen',direction:'Växlande vyer',kind:'youtube',youtube:'YlMYlOjhF9U'},
+ {id:'yt70',title:'Youtube - 70 livekameror',direction:'Växlande vyer',kind:'youtube',youtube:'YlMYlOjhF9U'},
  {id:'marieberg',title:'E20 Marieberg',direction:'Norr',kind:'trafik',url:'https://api.trafikinfo.trafikverket.se/v2/Images/data/road.infrastructure.camera/RoadConditionCamera_VViS_1808_K1.jpg'},
  {id:'lanna',title:'E18 Lanna',direction:'Öster',kind:'trafik',url:'https://api.trafikinfo.trafikverket.se/v2/Images/data/road.infrastructure.camera/RoadConditionCamera_VViS_1809_K1.jpg'},
  {id:'vretstorp',title:'E20 Vretstorp–Laxå',direction:'Väster',kind:'trafik',url:'https://api.trafikinfo.trafikverket.se/v2/Images/data/road.infrastructure.camera/RoadConditionCamera_VViS_1813_K1.jpg'},
