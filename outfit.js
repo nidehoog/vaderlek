@@ -66,12 +66,19 @@
     periods.forEach(([title,day,h,period], index) => {
       const card = document.createElement('article');
       card.className='outfitCard';
-      card.innerHTML='<h2></h2><div class="outfitIcon"></div><span>Känns som</span><strong class="outfitTemp">—</strong><small>Lufttemp —</small><b class="outfitWind"></b><div class="outfitAdvice"></div>';
+      card.innerHTML='<h2></h2><div class="outfitIcon"></div><span>Känns som</span><strong class="outfitTemp">—</strong><small class="airTemp">Lufttemp —</small><b class="outfitWind"></b><div class="outfitAdvice"></div>';
       card.querySelector('h2').textContent=title;
+      if(index===0){
+        card.classList.add('outfitNow');
+        card.querySelector('h2').insertAdjacentHTML('afterend','<small class="sunState"></small>');
+      }
       cards.append(card);
       weather.then(data => {
         const i=data.hourly.time.indexOf(day+'T'+String(h).padStart(2,'0')+':00');
         const value=k => index===0 ? data.current[k] : data.hourly[k][i];
+        if(index===0 && (value('is_day')===0 || value('is_day')===1)){
+          card.querySelector('.sunState').textContent=value('is_day')?'☀️ Solen är uppe':'🌙 Solen är nere';
+        }
         const wind=value('wind_speed_10m');
         if(Number.isFinite(wind)){
           const words=wind<0.5?'Vindstilla':wind<4?'Blåser lite':wind<8?'Blåser en del':wind<14?'Blåser mycket':'Blåser jättemycket';
@@ -79,9 +86,9 @@
         }
         const degrees=v => Number.isFinite(v)?Math.round(v)+'°':'—';
         card.querySelector('.outfitTemp').textContent=degrees(value('apparent_temperature'));
-        card.querySelector('small').textContent='Lufttemp '+degrees(value('temperature_2m'));
+        card.querySelector('.airTemp').textContent='Lufttemp '+degrees(value('temperature_2m'));
         card.querySelector('.outfitIcon').textContent=weatherIcon(value('weather_code'),!value('is_day'));
-      }).catch(()=>{if(!signal.aborted) card.querySelector('small').textContent='Vädret otillgängligt';});
+      }).catch(()=>{if(!signal.aborted) card.querySelector('.airTemp').textContent='Vädret otillgängligt';});
       const query=new URLSearchParams({lat:place.lat,lon:place.lon,date:day,period,style:'casual',units:'metric'});
       const url='https://api.whattowear.ca/recommend?'+query;
       if (!adviceRequests.has(url)) adviceRequests.set(url,read(url,signal));
@@ -111,5 +118,34 @@
   document.querySelector('#citySelect').addEventListener('change',render);
   document.querySelector('#viewMode').addEventListener('change',render);
   setInterval(()=>{if(document.body.dataset.view==='influencer') render();}, 30*60*1000);
+  const weight=document.querySelector('#proteinWeight');
+  const goal=document.querySelector('#proteinGoal');
+  const foods=document.querySelector('#proteinFoods');
+  function updateProtein(){
+    const kg=weight.valueAsNumber;
+    foods.replaceChildren();
+    if(!Number.isFinite(kg)||kg<1){
+      goal.textContent='Skriv din vikt i kilo';
+      return;
+    }
+    const grams=kg*0.83;
+    goal.textContent='≈ '+Math.round(grams)+' g protein';
+    const hint=document.createElement('p');
+    hint.textContent='Samma mängd protein i ett av dessa:';
+    foods.append(hint);
+    for(const [name,per100] of [['Kvarg',11],['Whey-pulver',80],['Kycklingfilé (rå vikt)',23]]){
+      const row=document.createElement('div');
+      row.textContent=name+' · '+Math.round(grams*100/per100)+' g';
+      foods.append(row);
+    }
+  }
+  weight.addEventListener('input',updateProtein);
+  for(const [id,step] of [['weightDown',-1],['weightUp',1]]){
+    document.getElementById(id).addEventListener('click',()=>{
+      weight.value=Math.max(1,Math.round(((weight.valueAsNumber||70)+step)*10)/10);
+      updateProtein();
+    });
+  }
+  updateProtein();
   render();
 })();

@@ -38,3 +38,15 @@ body:is([data-view="netscape"],[data-view="influencer"]) #dnsToggle,body:is([dat
 body[data-view="netscape"] .shell {padding-top:calc(18px + env(safe-area-inset-top,0px))}
 .legacyWeatherEmoji {font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif;font-variant-emoji:emoji;font-size:1.25em;vertical-align:middle}
 .outfitWind:not(:empty){margin-top:12px;font-size:clamp(22px,6vw,46px)}
+.outfitWind:not(:empty){font-size:clamp(16px,3.8vw,22px);margin-top:6px;font-weight:600}
+.outfitNow h2{font-size:clamp(26px,6vw,40px)}
+.outfitNow .sunState{font-size:16px;margin:3px 0 8px}
+.proteinCard{background:#e6f3da;color:#203124;border-radius:32px;padding:32px 14px;margin:14px 0;text-align:center}
+.proteinCard h2{margin:0;font-size:clamp(30px,7vw,58px)}
+.proteinCard label{display:block;font-weight:bold}
+.weightRow{display:flex;align-items:center;justify-content:center;gap:8px;margin:10px}
+.weightRow button,.weightRow input{min-height:48px;border:1px solid #859880;background:#fff;color:#172b1a;text-align:center;border-radius:12px;font:700 24px system-ui}
+.weightRow button{width:50px;cursor:pointer}.weightRow input{width:100px}
+#proteinGoal{display:block;font-size:clamp(28px,7vw,54px)}
+#proteinFoods div{margin:6px;font-size:clamp(18px,4vw,26px)}
+.proteinCard small{display:block;margin-top:18px}
