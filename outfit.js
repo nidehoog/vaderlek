@@ -53,8 +53,8 @@
     const next = new Date(date + 'T12:00:00Z');
     next.setUTCDate(next.getUTCDate()+1);
     const tomorrow = next.toISOString().slice(0,10);
-    const fields = 'temperature_2m,apparent_temperature,weather_code,is_day';
-    const params = new URLSearchParams({latitude:place.lat, longitude:place.lon, timezone:place.tz, current:fields, hourly:fields, forecast_days:2});
+    const fields = 'temperature_2m,apparent_temperature,weather_code,is_day,wind_speed_10m';
+    const params = new URLSearchParams({latitude:place.lat, longitude:place.lon, timezone:place.tz, wind_speed_unit:"ms", current:fields, hourly:fields, forecast_days:2});
     const weather = read('https://api.open-meteo.com/v1/forecast?' + params,signal);
     const periods = [
       ['Nu',date,hour,hour<6 || hour>=18?'night':'day'],
@@ -66,12 +66,17 @@
     periods.forEach(([title,day,h,period], index) => {
       const card = document.createElement('article');
       card.className='outfitCard';
-      card.innerHTML='<h2></h2><div class="outfitIcon"></div><span>Känns som</span><strong class="outfitTemp">—</strong><small>Lufttemp —</small><div class="outfitAdvice"></div>';
+      card.innerHTML='<h2></h2><div class="outfitIcon"></div><span>Känns som</span><strong class="outfitTemp">—</strong><small>Lufttemp —</small><b class="outfitWind"></b><div class="outfitAdvice"></div>';
       card.querySelector('h2').textContent=title;
       cards.append(card);
       weather.then(data => {
         const i=data.hourly.time.indexOf(day+'T'+String(h).padStart(2,'0')+':00');
         const value=k => index===0 ? data.current[k] : data.hourly[k][i];
+        const wind=value('wind_speed_10m');
+        if(Number.isFinite(wind)){
+          const words=wind<0.5?'Vindstilla':wind<4?'Blåser lite':wind<8?'Blåser en del':wind<14?'Blåser mycket':'Blåser jättemycket';
+          card.querySelector('.outfitWind').textContent='💨 '+words;
+        }
         const degrees=v => Number.isFinite(v)?Math.round(v)+'°':'—';
         card.querySelector('.outfitTemp').textContent=degrees(value('apparent_temperature'));
         card.querySelector('small').textContent='Lufttemp '+degrees(value('temperature_2m'));
