@@ -133,11 +133,14 @@
     const hint=document.createElement('p');
     hint.textContent='Samma mängd protein i ett av dessa:';
     foods.append(hint);
-    for(const [name,per100] of [['Kvarg',11],['Whey-pulver',80],['Kycklingfilé (rå vikt)',23]]){
+    for(const [name,per100] of [['🥣 Kvarg',11],['🥄 Whey-pulver',80],['🍗 Kycklingfilé (rå vikt)',23]]){
       const row=document.createElement('div');
       row.textContent=name+' · '+Math.round(grams*100/per100)+' g';
       foods.append(row);
     }
+    const eggs=document.createElement('div');
+    eggs.textContent='🥚 Ägg · cirka '+Math.round(grams/6)+' st';
+    foods.append(eggs);
   }
   weight.addEventListener('input',updateProtein);
   for(const [id,step] of [['weightDown',-1],['weightUp',1]]){

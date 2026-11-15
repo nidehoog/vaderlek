@@ -721,13 +721,13 @@ body[data-view="netscape"] #netscapeLegacy #legacyNow{white-space:pre-line;line-
   <header class="header" id="top"><div class="headright"><button class="roundButton" id="dnsToggle" type="button" title="Reservskydd" aria-label="Reservskydd" aria-controls="dnsPanel" aria-expanded="false" ><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg><span class="legacyTool" aria-hidden="true">Reservskydd</span></button><button class="roundButton" id="refresh" title="Uppdatera prognosen" aria-label="Uppdatera prognosen"><svg><use href="#i-refresh"/></svg><span class="legacyTool" aria-hidden="true">Uppdatera</span></button><button id="nearestCity" class="nearestCity" type="button" title="Hitta närmaste ort" aria-label="Hitta närmaste ort"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2" fill="currentColor"/><path d="M12 1v4m0 14v4M1 12h4m14 0h4"/></svg><span class="legacyTool" aria-hidden="true">Plats</span></button><label class="sr" for="citySelect">Välj ort</label><select id="citySelect" class="citySelect" aria-label="Välj ort"></select><label class="viewSelector" for="viewMode"><select id="viewMode" aria-label="Visningsläge"><option value="standard">Expert</option><option value="netscape">Netscape</option><option value="influencer">Influencer</option></select></label><div class="themePicker" role="group" aria-label="Sidans dag- och nattläge"><button type="button" class="themeOption" data-theme-option="auto" aria-pressed="true">◐ Auto</button><button type="button" class="themeOption" data-theme-option="day" aria-pressed="false">☀ Dag</button><button type="button" class="themeOption" data-theme-option="night" aria-pressed="false">☾ Natt</button></div></div></header>
 <div id="nearestStatus" role="status" aria-live="polite"></div><section id="outfitView" aria-label="Väder och kläder"><div id="outfitCards"></div><a class="jetRadar" href="https://www.celebplanes.com/map" target="_blank" rel="noopener noreferrer">🛩️ Kändisradar</a>
 <section class="proteinCard" aria-labelledby="proteinTitle">
-<h2 id="proteinTitle">Protein per dag</h2>
+<h2 id="proteinTitle">💪 Protein per dag</h2>
 <p>Riktvärde för vuxna 18–70 år</p>
-<label for="proteinWeight">Din vikt i kilo</label>
+<label for="proteinWeight">⚖️ Din vikt i kilo</label>
 <div class="weightRow"><button type="button" id="weightDown" aria-label="Minska ett kilo">−</button><input id="proteinWeight" type="number" inputmode="decimal" min="1" step="any" value="70"><button type="button" id="weightUp" aria-label="Öka ett kilo">+</button></div>
 <div aria-live="polite"><strong id="proteinGoal"></strong><div id="proteinFoods"></div></div>
-<small>Ungefärliga mängder. Proteinhalten varierar mellan produkter.</small>
-</section><small class="versionStamp">Väderlek 2.13.1</small></section><section id="netscapeLegacy" hidden aria-label="Avskalad Netscape-visning av vädret">
+<small>Ett ägg räknas som 50 g utan skal, cirka 6 g protein. Ungefärliga mängder. Proteinhalten varierar mellan produkter.</small>
+</section><small class="versionStamp">Väderlek 2.13.2</small></section><section id="netscapeLegacy" hidden aria-label="Avskalad Netscape-visning av vädret">
   <h2 id="legacyPlace">Örebro</h2>
   <div id="legacyNow">Aktuellt väder hämtas ...</div>
   <hr>
@@ -746,7 +746,7 @@ body[data-view="netscape"] #netscapeLegacy #legacyNow{white-space:pre-line;line-
     <li><a href="https://texttv.nu/" target="_blank" rel="noopener noreferrer">Text-TV</a></li>
     <li><a href="https://earth.google.com/" target="_blank" rel="noopener noreferrer" id="legacyEarthLink">Google earth</a></li>
   </ul>
-  <hr><p>Väderlek 2.13.1 · Uppdaterad 15 november 2026</p>
+  <hr><p>Väderlek 2.13.2 · Uppdaterad 15 november 2026</p>
 </section>
 <section id="dnsPanel" class="dnsMini" aria-label="Reservskydd" hidden>
   <span aria-hidden="true">🛡</span>
@@ -902,7 +902,7 @@ body[data-view="netscape"] #netscapeLegacy #legacyNow{white-space:pre-line;line-
   </section>
   <nav class="appTabbar" aria-label="Snabbnavigering"><a href="#now"><span>☀</span>Nu</a><a href="#cloudAside" id="cloudNavLink"><span>☁</span>Moln</a><a href="#weatherLayout"><span>▤</span>3 dygn</a><a href="#longSection"><span>▦</span>14 dygn</a><a href="#cameraSection" id="cameraNavLink"><span>📷</span>Kameror</a><a href="#resourcesSection"><span>↗</span>Länkar</a></nav>
 
-  <footer class="bottom"><div class="footerLinks"><span><span id="obsFooterLabel">Observation: <a href="https://metars.eu/" target="_blank" rel="noopener noreferrer">METAR</a> / <a href="https://www.smhi.se/" target="_blank" rel="noopener noreferrer">SMHI</a> · </span><span id="modeledFooterLabel" hidden>Aktuellt: <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Open-Meteo</a> (modell) · </span>Prognoser: <a href="https://www.smhi.se/" target="_blank" rel="noopener noreferrer">SMHI</a> och <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Open-Meteo</a> (flera modeller) · <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer">UKMO: CC BY-SA 4.0</a></span><span class="versionStamp"> · Väderlek 2.13.1 · Uppdaterad 15 november 2026</span></div></footer>
+  <footer class="bottom"><div class="footerLinks"><span><span id="obsFooterLabel">Observation: <a href="https://metars.eu/" target="_blank" rel="noopener noreferrer">METAR</a> / <a href="https://www.smhi.se/" target="_blank" rel="noopener noreferrer">SMHI</a> · </span><span id="modeledFooterLabel" hidden>Aktuellt: <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Open-Meteo</a> (modell) · </span>Prognoser: <a href="https://www.smhi.se/" target="_blank" rel="noopener noreferrer">SMHI</a> och <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Open-Meteo</a> (flera modeller) · <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer">UKMO: CC BY-SA 4.0</a></span><span class="versionStamp"> · Väderlek 2.13.2 · Uppdaterad 15 november 2026</span></div></footer>
 </div>
 <script>
 'use strict';
@@ -2940,5 +2940,5 @@ resetHistoryForPlace();
  updateSkyline();
 })();
 </script>
-<p class="locationPrivacy">Platsknappen väljer närmaste ort i listan direkt på din enhet. Dina GPS-koordinater skickas aldrig till vädersidan eller dess tjänster och sparas inte på någon server av sidan. För prognosen används ortens koordinater. Platsfunktionen använder inga cookies.</p><script src="./nearest.js"></script><script src="./outfit.js?v=2.13.0"></script></body>
+<p class="locationPrivacy">Platsknappen väljer närmaste ort i listan direkt på din enhet. Dina GPS-koordinater skickas aldrig till vädersidan eller dess tjänster och sparas inte på någon server av sidan. För prognosen används ortens koordinater. Platsfunktionen använder inga cookies.</p><script src="./nearest.js"></script><script src="./outfit.js?v=2.13.2"></script></body>
 </html>
