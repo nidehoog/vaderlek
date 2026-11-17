@@ -73,3 +73,8 @@ body[data-view="netscape"] .shell {padding-top:calc(18px + env(safe-area-inset-t
 .ringtoneStudio summary{cursor:pointer;font-weight:700}
 #ringtoneStatus{overflow-wrap:anywhere}
 @media(max-width:360px){.studioFields{grid-template-columns:1fr}}
+
+.ringtoneWave{position:relative;margin:20px 22px;height:160px;touch-action:none;background:#fff8;border-radius:12px}
+.ringtoneWave canvas{display:block;width:100%;height:160px}
+.ringtoneRegion{position:absolute;top:0;height:100%;background:#aa76df33;border:2px solid #6f3ca0;pointer-events:none}
+.ringtoneStudio .waveHandle{position:absolute;top:50%;transform:translate(-50%,-50%);width:44px;height:54px;padding:0;background:#5c347c;color:white;touch-action:none;z-index:1}

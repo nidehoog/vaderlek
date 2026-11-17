@@ -3,7 +3,7 @@
 Run the dependency-free automated checks with Node:
 
 ```sh
-node --test tests/influencer.test.cjs
+node --test tests/influencer.test.cjs tests/waveform.test.cjs
 ```
 
 ## Verified automatically
@@ -28,3 +28,9 @@ No successful browser or physical iPhone test. The local HTTP preview timed out;
 4. Check the golden panel in Stockholm, another timezone, northern winter and polar summer. Before the 30-minute window it shows times; during countdown and the period it shows remaining minutes with the time range underneath. Calculations use geometric solar altitude -4 to +6 degrees, selected city coordinates and local date. Cloud cover is not predicted. Direction is at the period midpoint. At high latitudes, continuous light may be split at solar noon or the local day boundary.
 5. Check year below week, including Jan 1, and automatic local-date rollover. Switch city and mode and return after backgrounding.
 6. Check mobile widths, Expert and Netscape modes, weather cards, clothing advice, protein calculation, external links and offline reload after the updated service worker has activated.
+
+## Waveform and simplified influencer follow-up
+
+15 Node tests pass, including handle bounds, short clips, stereo waveform peaks and full Swedish compass directions. The UI now caps clips at 29.9 seconds, supports touch/pointer handles and keyboard arrows (Shift for 1-second steps), and shows fades. Screen recording help links directly to Apple; GarageBand is an alternative link. The golden panel shows duration and full directions with no solar degrees, and the protein footnote is removed. Export remains PCM WAV.
+
+Not verified on a physical iPhone: touch dragging, layout, video import, playback, Files ringtone installation or sharing. The earlier browser verification limits still apply. Manually check the two handles, numeric inputs, fades, changing source files and short/long sources before treating the phone workflow as verified.

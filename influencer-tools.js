@@ -78,6 +78,28 @@
   function compass(degrees) {
     return ['N','NNO','NO','ONO','O','OSO','SO','SSO','S','SSV','SV','VSV','V','VNV','NV','NNV'][Math.round(degrees/22.5)%16];
   }
+  function compassWords(degrees) {
+    return ['norr','nordost','öster','sydost','söder','sydväst','väster','nordväst'][Math.round(degrees/45)%8];
+  }
+  function moveBoundary(start,end,value,edge,duration) {
+    const limit=Math.min(29.9,duration), gap=Math.min(.05,duration);
+    value=Math.round(value*100)/100;
+    if(edge==='start')start=Math.max(0,Math.min(value,end-gap));
+    else end=Math.min(duration,Math.max(value,start+gap));
+    if(end-start>limit){if(edge==='start')end=start+limit;else start=end-limit;}
+    return {start,end};
+  }
+  function waveformPeaks(buffer,bins=1000) {
+    const peaks=new Float32Array(bins);
+    for(let c=0;c<buffer.numberOfChannels;c++){
+      const data=buffer.getChannelData(c);
+      for(let i=0;i<data.length;i++){
+        const bin=Math.min(bins-1,Math.floor(i*bins/data.length));
+        peaks[bin]=Math.max(peaks[bin],Math.abs(data[i]));
+      }
+    }
+    return peaks;
+  }
   function calendarInfo(ms,tz){
     const key=dateKey(ms,tz), thursday=new Date(key+'T00:00:00Z');
     thursday.setUTCDate(thursday.getUTCDate()+4-(thursday.getUTCDay()||7));
@@ -116,7 +138,7 @@
     }
     return view.buffer;
   }
-  const api={solarPosition,dateKey,dayBoundary,goldenPeriods,goldenStatus,compass,calendarInfo,clipAudio,encodeWav};
+  const api={solarPosition,dateKey,dayBoundary,goldenPeriods,goldenStatus,compass,compassWords,moveBoundary,waveformPeaks,calendarInfo,clipAudio,encodeWav};
   if(typeof module !== 'undefined' && module.exports) module.exports=api;
   else root.InfluencerTools=api;
 })(globalThis);

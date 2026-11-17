@@ -48,9 +48,9 @@
       const row=document.createElement('p');
       const status=InfluencerTools.goldenStatus(period,now);
       const heading=document.createElement('strong');
-      heading.textContent=period.label+' · '+(status || time(period.start)+'–'+time(period.end));
+      heading.textContent=period.label+' · '+(status ? status.replace('Gyllene timmen','Fotoljus').replace('min kvar','minuter kvar med fotoljus') : '✨ Perfekt fotoljus i '+Math.round((period.end-period.start)/60000)+' minuter');
       const direction=document.createElement('small');
-      direction.textContent='Mot '+InfluencerTools.compass(period.azimuth)+' · '+Math.round(period.azimuth)+'°'+(status?' · '+time(period.start)+'–'+time(period.end):'');
+      direction.textContent=time(period.start)+'–'+time(period.end)+' · Mot '+InfluencerTools.compassWords(period.azimuth);
       row.append(heading,direction);return row;
     }));
     if(!panel._periods.length)panel.querySelector('.goldenTimes').textContent='Ingen gyllene timme på den här orten i dag.';
@@ -121,7 +121,7 @@
     const golden=document.createElement('article');
     golden.className='goldenCard';
     golden.setAttribute('aria-label','Gyllene timmen');
-    golden.innerHTML='<h2>🌅 Gyllene timmen</h2><div class="goldenTimes" aria-live="polite"></div><small>Beräknat fotoljus i vald orts lokala tid, solen −4° till +6°. Moln kan skymma ljuset. Riktningen gäller periodens mitt.</small>';
+    golden.innerHTML='<h2>🌅 Gyllene timmen</h2><div class="goldenTimes" aria-live="polite"></div><small>Bästa tiden för mjukt, varmt fotoljus. Moln kan påverka ljuset.</small>';
     cards.append(golden);
     updateGolden(golden,place);
     goldenTimer=setInterval(()=>{
