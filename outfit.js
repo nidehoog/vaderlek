@@ -35,6 +35,26 @@
     return '';
   }
   let active;
+  let goldenTimer;
+  let renderedDate;
+  function updateGolden(panel, place) {
+    const now=Date.now(), key=InfluencerTools.dateKey(now,place.tz);
+    if(panel.dataset.date!==key){
+      panel.dataset.date=key;
+      panel._periods=InfluencerTools.goldenPeriods(key,place);
+    }
+    const time=t=>new Intl.DateTimeFormat('sv-SE',{timeZone:place.tz,hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).format(new Date(t));
+    panel.querySelector('.goldenTimes').replaceChildren(...panel._periods.map(period=>{
+      const row=document.createElement('p');
+      const status=InfluencerTools.goldenStatus(period,now);
+      const heading=document.createElement('strong');
+      heading.textContent=period.label+' · '+(status || time(period.start)+'–'+time(period.end));
+      const direction=document.createElement('small');
+      direction.textContent='Mot '+InfluencerTools.compass(period.azimuth)+' · '+Math.round(period.azimuth)+'°'+(status?' · '+time(period.start)+'–'+time(period.end):'');
+      row.append(heading,direction);return row;
+    }));
+    if(!panel._periods.length)panel.querySelector('.goldenTimes').textContent='Ingen gyllene timme på den här orten i dag.';
+  }
   async function read(url, signal) {
     const response = await fetch(url, {signal});
     if (!response.ok) throw new Error(String(response.status));
@@ -43,12 +63,14 @@
   function render() {
     syncLinks();
     active?.abort();
+    clearInterval(goldenTimer);
     if (document.body.dataset.view !== 'influencer') return;
     active = new AbortController();
     const {signal} = active;
     const place = selectedEarthPlace();
     const now = new Date();
     const date = new Intl.DateTimeFormat('sv-SE', {timeZone:place.tz, year:'numeric',month:'2-digit',day:'2-digit'}).format(now);
+    renderedDate=date;
     const hour = Number(new Intl.DateTimeFormat('sv-SE',{timeZone:place.tz,hour:'2-digit',hourCycle:'h23'}).format(now));
     const next = new Date(date + 'T12:00:00Z');
     next.setUTCDate(next.getUTCDate()+1);
@@ -96,17 +118,25 @@
         card.querySelector('.outfitAdvice').textContent=shortAdvice(data);
       }).catch(()=>{if(!signal.aborted) card.querySelector('.outfitAdvice').textContent='Klädråd saknas';});
     });
+    const golden=document.createElement('article');
+    golden.className='goldenCard';
+    golden.setAttribute('aria-label','Gyllene timmen');
+    golden.innerHTML='<h2>🌅 Gyllene timmen</h2><div class="goldenTimes" aria-live="polite"></div><small>Beräknat fotoljus i vald orts lokala tid, solen −4° till +6°. Moln kan skymma ljuset. Riktningen gäller periodens mitt.</small>';
+    cards.append(golden);
+    updateGolden(golden,place);
+    goldenTimer=setInterval(()=>{
+      if(InfluencerTools.dateKey(Date.now(),place.tz)!==renderedDate){render();return;}
+      updateGolden(golden,place);
+    },15000);
     const calendar = document.createElement('article');
     calendar.className = 'outfitCard outfitCalendar';
-    calendar.innerHTML = '<span>Idag är det</span><h2></h2><span>Vecka</span><strong></strong><span>Dagens namnsdagar</span><b aria-live="polite">…</b>';
+    calendar.innerHTML = '<span>Idag är det</span><h2></h2><span>Vecka</span><strong></strong><small class="calendarYear"></small><span>Dagens namnsdagar</span><b aria-live="polite">…</b>';
     cards.append(calendar);
     const weekday = new Intl.DateTimeFormat('sv-SE',{timeZone:place.tz,weekday:'long'}).format(now);
     calendar.querySelector('h2').textContent = weekday[0].toUpperCase() + weekday.slice(1);
-    // The Thursday of an ISO week determines its week-year.
-    const thursday = new Date(date + 'T00:00:00Z');
-    thursday.setUTCDate(thursday.getUTCDate() + 4 - (thursday.getUTCDay() || 7));
-    const yearStart = Date.UTC(thursday.getUTCFullYear(), 0, 1);
-    calendar.querySelector('strong').textContent = Math.floor((thursday - yearStart) / 604800000) + 1;
+    const calendarDate=InfluencerTools.calendarInfo(now.getTime(),place.tz);
+    calendar.querySelector('strong').textContent=calendarDate.week;
+    calendar.querySelector('.calendarYear').textContent=calendarDate.year;
     const names = calendar.querySelector('b');
     read('https://sholiday.faboul.se/dagar/v2.1/' + date.replaceAll('-', '/'), signal)
       .then(data => {
@@ -117,6 +147,7 @@
   }
   document.querySelector('#citySelect').addEventListener('change',render);
   document.querySelector('#viewMode').addEventListener('change',render);
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden && document.body.dataset.view==='influencer')render();});
   setInterval(()=>{if(document.body.dataset.view==='influencer') render();}, 30*60*1000);
   const weight=document.querySelector('#proteinWeight');
   const goal=document.querySelector('#proteinGoal');
@@ -139,7 +170,13 @@
       foods.append(row);
     }
     const eggs=document.createElement('div');
-    eggs.textContent='🥚 Ägg · cirka '+Math.round(grams/6)+' st';
+    const egg=document.createElement('button');
+    egg.type='button';egg.className='studioEgg';egg.textContent='🥚';
+    egg.setAttribute('aria-label','Öppna ringsignalstudion');
+    egg.setAttribute('aria-controls','ringtoneStudio');
+    egg.setAttribute('aria-expanded',String(!document.getElementById('ringtoneStudio').hidden));
+    egg.addEventListener('click',()=>RingtoneStudio.open(egg));
+    eggs.append(egg,document.createTextNode(' Ägg · cirka '+Math.round(grams/6)+' st'));
     foods.append(eggs);
   }
   weight.addEventListener('input',updateProtein);
@@ -152,3 +189,4 @@
   updateProtein();
   render();
 })();
+

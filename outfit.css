@@ -50,3 +50,26 @@ body[data-view="netscape"] .shell {padding-top:calc(18px + env(safe-area-inset-t
 #proteinGoal{display:block;font-size:clamp(28px,7vw,54px)}
 #proteinFoods div{margin:6px;font-size:clamp(18px,4vw,26px)}
 .proteinCard small{display:block;margin-top:18px}
+
+.goldenCard,.ringtoneStudio{background:linear-gradient(145deg,#ffe8b0,#ffd4ce);color:#211339;border-radius:32px;padding:28px 18px;margin:14px 0;text-align:center}
+.goldenCard h2,.ringtoneStudio h2{font-size:clamp(28px,7vw,54px);margin:0 0 16px}
+.goldenTimes strong{display:block;font-size:clamp(22px,5vw,38px)}
+.goldenTimes small{display:block;margin-top:6px;font-size:18px}
+.outfitCalendar .calendarYear{font-size:clamp(18px,4vw,26px);margin:-14px 0 22px}
+.studioEgg{border:0;background:transparent;font:inherit;cursor:pointer;min-width:44px;min-height:44px;padding:4px}
+.studioEgg:focus-visible,.ringtoneStudio :focus-visible{outline:3px solid #65429b;outline-offset:3px}
+.ringtoneStudio[hidden],.ringtoneStudio [hidden]{display:none!important}
+.ringtoneStudio{background:linear-gradient(145deg,#e6dbff,#f8d8e9);position:relative;scroll-margin-top:20px}
+.ringtoneStudio .studioClose{float:right;min-width:44px;min-height:44px}
+.ringtoneStudio label{display:block;font-weight:700}
+.ringtoneStudio input{display:block;max-width:100%;width:100%;margin:8px 0;padding:10px;font:inherit;border:1px solid #8c799c;border-radius:12px;background:#fff;color:#211339;min-height:44px}
+.ringtoneStudio fieldset{border:1px solid #8c799c;border-radius:16px;padding:16px;min-width:0}
+.studioFields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;text-align:left}
+.studioActions{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin:16px 0}
+.ringtoneStudio button,.studioActions a{font:inherit;padding:12px;border:1px solid #8c799c;border-radius:12px;background:#fff;color:#211339;cursor:pointer;min-height:44px}
+.ringtoneStudio button:disabled{opacity:.5;cursor:default}
+.ringtoneStudio audio{display:block;width:100%;margin:16px 0}
+.ringtoneStudio details{text-align:left;margin-top:16px;line-height:1.6}
+.ringtoneStudio summary{cursor:pointer;font-weight:700}
+#ringtoneStatus{overflow-wrap:anywhere}
+@media(max-width:360px){.studioFields{grid-template-columns:1fr}}
