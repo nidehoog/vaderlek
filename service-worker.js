@@ -1,5 +1,5 @@
-const cacheName = 'vaderlek-2.14.0-shell-v1';
-const files = ['index.html', 'nearest.js', 'influencer-tools.js?v=2.14.0', 'ringtone-studio.js?v=2.14.0', 'outfit.js?v=2.14.0', 'outfit.css?v=2.14.0', 'manifest.webmanifest', 'vadergungan-180.png', 'vadergungan-192.png', 'vadergungan-512.png'];
+const cacheName = 'vaderlek-2.14.1-shell-v1';
+const files = ['index.html', 'nearest.js', 'influencer-tools.js?v=2.14.0', 'ringtone-studio.js?v=2.14.1', 'outfit.js?v=2.14.0', 'outfit.css?v=2.14.0', 'manifest.webmanifest', 'vadergungan-180.png', 'vadergungan-192.png', 'vadergungan-512.png'];
 const assets = files.map(file => new URL(file, self.registration.scope).href);
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(cacheName).then(cache => cache.addAll(assets)));

@@ -6,9 +6,9 @@
   panel.innerHTML=`
     <button type="button" class="studioClose" aria-label="Stäng ringsignalstudion">✕</button>
     <h2 id="ringtoneTitle" tabindex="-1">🎵 Ringsignalstudio</h2>
-    <p>Gör en ringsignal av din egen video. Filen bearbetas bara på din enhet.</p>
-    <label for="ringtoneFile">Välj video eller ljudfil</label>
-    <input id="ringtoneFile" type="file" accept="video/*,audio/*,.mov,.mp4,.m4a,.wav">
+    <p>Gör en ringsignal med ljud från en video eller skärminspelning. Filen bearbetas bara på din enhet.</p>
+    <label for="ringtoneFile">Välj video eller skärminspelning</label>
+    <input id="ringtoneFile" type="file" accept="video/*,.mov,.mp4">
     <p id="ringtoneStatus" role="status"></p>
     <fieldset id="ringtoneControls" disabled>
       <legend>Klipp och tona ljudet · högst 30 sekunder</legend>
@@ -19,14 +19,18 @@
         <label>Uttoning (sekunder)<input id="ringtoneFadeOut" type="number" min="0" step="0.1" value="1" inputmode="decimal"></label>
       </div>
       <p id="ringtoneLength"></p>
-      <div class="studioActions"><button type="button" id="ringtonePreview">▶ Lyssna på klippet</button><button type="button" id="ringtoneExport">Exportera WAV</button></div>
+      <div class="studioActions"><button type="button" id="ringtonePreview">▶ Lyssna på klippet</button><button type="button" id="ringtoneExport">Skapa ringsignal</button></div>
     </fieldset>
     <audio id="ringtoneAudio" controls hidden aria-label="Förhandslyssna med toningar"></audio>
-    <div class="studioActions" id="ringtoneDownload" hidden><a download="ringsignal.wav">Spara ringsignal.wav</a><button type="button" id="ringtoneShare" hidden>Dela ljudfil</button></div>
-    <details><summary>Så använder du ljudet på iPhone</summary>
-      <ol><li>Exportera WAV och spara filen i Filer på din iPhone.</li><li>Öppna GarageBand, skapa ett ljudinspelningsprojekt och välj spårvyn. Importera WAV-filen via loopknappen → Filer.</li><li>Lägg ljudet längst till vänster. Gå till Mina låtar, håll på projektet och välj Dela → Ringsignal → Exportera.</li></ol>
-      <p>WAV är ljudfilen till GarageBand. Webbsidan installerar inte ringsignalen automatiskt och skapar ingen M4R-fil.</p>
-      <a href="https://support.apple.com/sv-se/120692" target="_blank" rel="noopener noreferrer">Apples instruktioner</a>
+    <div class="studioActions" id="ringtoneDownload" hidden><a download="ringsignal.wav">Spara ringsignalen</a><button type="button" id="ringtoneShare" hidden>Dela ringsignalen</button></div>
+    <details id="ringtoneInstall" hidden><summary>Nästa steg: använd ringsignalen på din iPhone</summary>
+      <ol><li>Spara ringsignalen i appen Filer.</li><li>Öppna Filer och håll fingret på den sparade filen.</li><li>Tryck på Dela och välj Använd som ringsignal. Det här alternativet finns i iOS 26 och senare för ljudfiler som stöds.</li></ol>
+      <p>Om alternativet saknas, öppna filen och prova delningsknappen där. Prova också att göra klippet kortare än 30 sekunder.</p>
+    </details>
+    <details><summary>Behöver du en video? Så gör du en skärminspelning</summary>
+      <ol><li>Öppna videon eller appen med ljudet du vill använda.</li><li>Svep ned från skärmens övre högra hörn för att öppna Kontrollcenter. På en iPhone med hemknapp sveper du upp från nederkanten.</li><li>Tryck på Skärminspelning, symbolen med en cirkel i en ring. Saknas den: håll på en tom yta i Kontrollcenter, välj Lägg till ett reglage och sedan Skärminspelning.</li><li>Vänta tills nedräkningen är klar, stäng Kontrollcenter och spela upp ljudet. Låt mikrofonen vara av om du bara vill ha ljudet från videon eller appen.</li><li>Stoppa via inspelningssymbolen överst på skärmen eller via Kontrollcenter. Inspelningen sparas i Bilder.</li><li>Gå tillbaka hit, tryck på Välj video eller skärminspelning och välj inspelningen från bildbiblioteket.</li></ol>
+      <p>Vissa appar tillåter inte inspelning av bild eller ljud.</p>
+      <a href="https://support.apple.com/sv-se/102653" target="_blank" rel="noopener noreferrer">Visa Apples hjälp för skärminspelning</a>
     </details>`;
   document.querySelector('.proteinCard').after(panel);
   const $=id=>panel.querySelector('#'+id);
@@ -36,7 +40,7 @@
   function clearOutput(){
     audio.pause();audio.removeAttribute('src');audio.load();audio.hidden=true;
     if(url)URL.revokeObjectURL(url);url=null;exportFile=null;
-    $('ringtoneDownload').hidden=true;$('ringtoneShare').hidden=true;
+    $('ringtoneDownload').hidden=true;$('ringtoneShare').hidden=true;$('ringtoneInstall').hidden=true;
   }
   function selection(){return InfluencerTools.clipAudio(buffer,...fields.map(field=>field.valueAsNumber));}
   function validate(){
@@ -67,7 +71,7 @@
   $('ringtoneFile').addEventListener('change',async event=>{
     const ticket=++generation, file=event.target.files[0];
     buffer=null;controls.disabled=true;clearOutput();$('ringtoneLength').textContent='';
-    if(!file){status.textContent='Välj en video eller ljudfil.';return;}
+    if(!file){status.textContent='Välj en video eller skärminspelning.';return;}
     if(file.size>50*1024*1024){status.textContent='Filen är för stor. Välj ett kortare klipp, högst 50 MB.';return;}
     status.textContent='Läser ljudet i '+file.name+' …';
     try{
@@ -100,13 +104,14 @@
     try{
       prepare();$('ringtoneDownload').querySelector('a').href=url;$('ringtoneDownload').hidden=false;
       $('ringtoneShare').hidden=!(navigator.canShare&&navigator.canShare({files:[exportFile]}));
-      status.textContent='Ljudfilen är klar. Spara eller dela den till Filer.';
+      $('ringtoneInstall').hidden=false;$('ringtoneInstall').open=true;
+      status.textContent='Din ringsignal är klar. Spara den i Filer och följ nästa steg nedan.';
     }catch(error){status.textContent=error.message;}
   });
   $('ringtoneShare').addEventListener('click',async()=>{
     if(!exportFile)return;
     try{await navigator.share({files:[exportFile],title:'Min ringsignal'});}
-    catch(error){if(error.name!=='AbortError')status.textContent='Delning misslyckades. Använd Spara ringsignal.wav i stället.';}
+    catch(error){if(error.name!=='AbortError')status.textContent='Delning misslyckades. Tryck på Spara ringsignalen i stället.';}
   });
   window.addEventListener('pagehide',()=>{clearOutput();context?.close();context=null;});
 })();
