@@ -696,7 +696,7 @@ body[data-view="netscape"] #netscapeLegacy #legacyNow{white-space:pre-line;line-
 /* Väder 2.9.5: Text-TV finns endast för svenska orter. */
 #teletextSection[hidden],.appTabbar a[href="#teletextSection"][hidden],#netscapeLegacy li[hidden]{display:none!important}
 </style>
-<link rel="stylesheet" href="./outfit.css?v=2.16.0"><style>.longTable .weekPrecip td{text-align:left;padding:10px 12px;white-space:normal;background:var(--card);color:var(--ink)}.weekPrecip small{color:var(--muted)}</style></head>
+<link rel="stylesheet" href="./outfit.css?v=2.16.0"><style>.longTable .weekPrecip td{text-align:left;padding:10px 12px;white-space:normal;background:var(--card);color:var(--ink)}.weekPrecip small{color:var(--muted)}</style><style>#converter summary{cursor:pointer;font-weight:700}#converterBody label{display:block;margin:.5em 0}#converterBody select{max-width:75%;margin-inline-start:.5em}#converterBody iframe{display:block;width:100%;height:230px;border:0}</style></head>
 <body>
 <!-- All CSS, JS och app-/länkikoner finns i HTML-filen. Enbart live-data och molnbilder hämtas från nätet. -->
 <svg aria-hidden="true" class="sr" xmlns="http://www.w3.org/2000/svg"><defs>
@@ -727,7 +727,7 @@ body[data-view="netscape"] #netscapeLegacy #legacyNow{white-space:pre-line;line-
 <div class="weightRow"><button type="button" id="weightDown" aria-label="Minska ett kilo">−</button><input id="proteinWeight" type="number" inputmode="decimal" min="1" step="any" value="70"><button type="button" id="weightUp" aria-label="Öka ett kilo">+</button></div>
 <div aria-live="polite"><strong id="proteinGoal"></strong><div id="proteinFoods"></div></div>
 
-</section><small class="versionStamp">Väderlek 2.13.2</small></section><section id="netscapeLegacy" hidden aria-label="Avskalad Netscape-visning av vädret">
+</section><details class="proteinCard" id="converter"><summary>Konverterare</summary><div id="converterBody"></div></details><small class="versionStamp">Väderlek 2.13.2</small></section><section id="netscapeLegacy" hidden aria-label="Avskalad Netscape-visning av vädret">
   <h2 id="legacyPlace">Örebro</h2>
   <div id="legacyNow">Aktuellt väder hämtas ...</div>
   <hr>
@@ -2994,5 +2994,5 @@ resetHistoryForPlace();
  updateSkyline();
 })();
 </script>
-<p class="locationPrivacy">Platsknappen väljer närmaste ort i listan direkt på din enhet. Dina GPS-koordinater skickas aldrig till vädersidan eller dess tjänster och sparas inte på någon server av sidan. För prognosen används ortens koordinater. Platsfunktionen använder inga cookies.</p><script src="./nearest.js"></script><script src="./influencer-tools.js?v=2.15.0"></script><script src="./vendor/lame.min.js"></script><script src="./ringtone-studio.js?v=2.16.0"></script><script src="./outfit.js?v=2.15.0"></script></body>
+<p class="locationPrivacy">Platsknappen väljer närmaste ort i listan direkt på din enhet. Dina GPS-koordinater skickas aldrig till vädersidan eller dess tjänster och sparas inte på någon server av sidan. För prognosen används ortens koordinater. Platsfunktionen använder inga cookies.</p><script src="./nearest.js"></script><script src="./influencer-tools.js?v=2.15.0"></script><script src="./vendor/lame.min.js"></script><script src="./ringtone-studio.js?v=2.16.0"></script><script src="./outfit.js?v=2.15.0"></script><script src="./converter.js"></script></body>
 </html>
