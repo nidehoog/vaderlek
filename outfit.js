@@ -172,10 +172,10 @@
     const eggs=document.createElement('div');
     const egg=document.createElement('button');
     egg.type='button';egg.className='studioEgg';egg.textContent='🥚';
-    egg.setAttribute('aria-label','Öppna Mandelbrot');
-    egg.setAttribute('aria-controls','fractalPanel');
-    egg.setAttribute('aria-expanded',String(!document.getElementById('fractalPanel').hidden));
-    egg.addEventListener('click',()=>toggleFractal(egg));
+    egg.setAttribute('aria-label','Öppna ringsignalstudion');
+    egg.setAttribute('aria-controls','ringtoneStudio');
+    egg.setAttribute('aria-expanded',String(!document.getElementById('ringtoneStudio').hidden));
+    egg.addEventListener('click',()=>RingtoneStudio.open(egg));
     eggs.append(egg,document.createTextNode(' Ägg · cirka '+Math.round(grams/6)+' st'));
     foods.append(eggs);
   }
