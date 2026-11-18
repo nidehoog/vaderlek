@@ -696,7 +696,7 @@ body[data-view="netscape"] #netscapeLegacy #legacyNow{white-space:pre-line;line-
 /* Väder 2.9.5: Text-TV finns endast för svenska orter. */
 #teletextSection[hidden],.appTabbar a[href="#teletextSection"][hidden],#netscapeLegacy li[hidden]{display:none!important}
 </style>
-<link rel="stylesheet" href="./outfit.css?v=2.16.0"></head>
+<link rel="stylesheet" href="./outfit.css?v=2.16.0"><style>.longTable .weekPrecip td{text-align:left;padding:10px 12px;white-space:normal;background:var(--card);color:var(--ink)}.weekPrecip small{color:var(--muted)}</style></head>
 <body>
 <!-- All CSS, JS och app-/länkikoner finns i HTML-filen. Enbart live-data och molnbilder hämtas från nätet. -->
 <svg aria-hidden="true" class="sr" xmlns="http://www.w3.org/2000/svg"><defs>
@@ -980,7 +980,7 @@ function category(code,source){
 }
 const kindText={sun:'Klart',partly:'Växlande molnighet',cloud:'Molnigt',rain:'Regn',snow:'Snö',sleet:'Snöblandat',thunder:'Åska',fog:'Dimma'};
 function rowFromSmhi(item){let d=item.data||{};let symbol=num(d.symbol_code);return {t:new Date(item.time),temp:num(d.air_temperature),rain:num(d.precipitation_amount_mean_deterministic)??num(d.precipitation_amount_mean),wind:num(d.wind_speed),gust:num(d.wind_speed_of_gust),dir:num(d.wind_from_direction),cloud:num(d.cloud_area_fraction),kind:category(symbol,'smhi'),prob:num(d.probability_of_precipitation)}}
-function rowFromOM(j,i){const h=j.hourly;const v=(k)=>num(h[k]?.[i]);return {t:new Date(h.time[i] + (h.time[i].endsWith('Z')?'': 'Z')),temp:v('temperature_2m'),rain:v('precipitation'),wind:v('wind_speed_10m')!==null?v('wind_speed_10m')/3.6:null,gust:v('wind_gusts_10m')!==null?v('wind_gusts_10m')/3.6:null,dir:v('wind_direction_10m'),cloud:v('cloud_cover'),kind:category(v('weather_code'),'om'),prob:v('precipitation_probability')}}
+function rowFromOM(j,i){const h=j.hourly;const v=(k)=>num(h[k]?.[i]);return {t:new Date(h.time[i] + (h.time[i].endsWith('Z')?'': 'Z')),temp:v('temperature_2m'),rain:v('precipitation'),snowCm:v('snowfall'),wind:v('wind_speed_10m')!==null?v('wind_speed_10m')/3.6:null,gust:v('wind_gusts_10m')!==null?v('wind_gusts_10m')/3.6:null,dir:v('wind_direction_10m'),cloud:v('cloud_cover'),kind:category(v('weather_code'),'om'),prob:v('precipitation_probability')}}
 function makeUrl(id){
  if(id==='smhi')return `https://opendata-download-metfcst.smhi.se/api/category/snow1g/version/1/geotype/point/lon/${PLACE.lon}/lat/${PLACE.lat}/data.json`;
  const model=id==='ecmwf'?'ecmwf_ifs025':id==='gfs'?'ncep_gfs_seamless':PLACE.nordic?'icon_eu':'icon_seamless';const p=new URLSearchParams({latitude:PLACE.lat,longitude:PLACE.lon,models:model,hourly:'temperature_2m,precipitation,weather_code,wind_speed_10m,wind_gusts_10m,wind_direction_10m,cloud_cover',wind_speed_unit:'kmh',timezone:'GMT',forecast_days:'4'});return 'https://api.open-meteo.com/v1/forecast?'+p.toString();
@@ -1302,12 +1302,21 @@ function next14Dates(){return Array.from({length:14},(_,i)=>addDate(ymd(new Date
 function makeLongUrl(src){
  if(src.id==='smhi')return makeUrl('smhi');
  const params=new URLSearchParams({latitude:String(PLACE.lat),longitude:String(PLACE.lon),models:src.model,
-  hourly:'temperature_2m,precipitation,weather_code,wind_speed_10m,wind_direction_10m,cloud_cover',
+  hourly:'temperature_2m,precipitation,snowfall,weather_code,wind_speed_10m,wind_direction_10m,cloud_cover',
   wind_speed_unit:'kmh',timezone:'GMT',forecast_days:'16'});
  return (src.ensemble?'https://ensemble-api.open-meteo.com/v1/ensemble?':'https://api.open-meteo.com/v1/forecast?')+params;
 }
 async function fetchLongModel(src){
- const j=await fetchJSON(makeLongUrl(src),25000);
+ const url=makeLongUrl(src);
+ let j;
+ try { j=await fetchJSON(url,25000); }
+ catch (error) {
+  const fallback=new URL(url);
+  const fields=fallback.searchParams.get('hourly');
+  if(!fields?.includes('snowfall'))throw error;
+  fallback.searchParams.set('hourly',fields.split(',').filter(k=>k!=='snowfall').join(','));
+  j=await fetchJSON(fallback.href,25000);
+ }
  let rows=src.id==='smhi'?(j.timeSeries||[]).map(rowFromSmhi):(j.hourly?.time||[]).map((_,i)=>rowFromOM(j,i));
  rows=rows.filter(r=>Number.isFinite(r.t.getTime())&&r.temp!==null);
  if(!rows.length)throw Error('Prognosen saknar temperaturer');
@@ -1389,6 +1398,50 @@ function renderLongPreview(){
   return `<div class="longPreviewCard"><div class="previewDate">${label}<small>${CAL_SHORT.format(new Date(day+'T12:00:00Z'))} · ${CAL_WEEK.format(new Date(day+'T12:00:00Z'))}</small></div><span class="previewWeather">${d?.kind?ico(d.kind):''}<b class="previewTemp ${d&&Math.abs(d.temp)<=1?'nearZero':''}" ${d?`style="background:${tempColor(d.temp)};color:${tempInk(d.temp)}"`:''}>${d?Math.round(d.temp)+'°':'—'}</b></span><span class="previewScore">${score===null?'—':score+' %'}</span></div>`;
  }).join('');
 }
+function weekTotals(rows, start, end) {
+ if (!rows) return null;
+ const hour = 3600000;
+ const stamps = new Map(rows.map(row => [+row.t,row]));
+ let rain = 0, snow = 0;
+ // Each precipitation amount belongs to the preceding hour.
+ for (let t=(Math.floor(start/hour)+1)*hour; t<=Math.ceil(end/hour)*hour; t+=hour) {
+  const share=(Math.min(end,t)-Math.max(start,t-hour))/hour;
+  const row = stamps.get(t);
+  if (!row || !Number.isFinite(row.rain) || row.rain < 0) return null;
+  if (row.rain===0 && !(row.snowCm>0)) continue;
+  if (Number.isFinite(row.snowCm) && row.snowCm>=0) {
+   snow += share*row.snowCm;
+   rain += share*Math.max(0,row.rain-row.snowCm/0.7);
+  } else if (row.kind==='rain' || row.kind==='thunder') {
+   rain += share*row.rain;
+  } else return null;
+ }
+ return {rain,snow};
+}
+function weekMidnight(key) {
+ let lo=Date.parse(key+'T00:00:00Z')-86400000, hi=lo+172800000;
+ while (hi-lo>1) {
+  const mid=Math.floor((lo+hi)/2);
+  if (ymd(new Date(mid))<key) lo=mid; else hi=mid;
+ }
+ return hi;
+}
+function weekRow(dates, number) {
+ const start=weekMidnight(dates[0]), end=weekMidnight(addDate(dates[6],1));
+ const totals=LONG_MODELS.map(model=>({model,total:weekTotals(longDatasets[model.id],start,end)})).filter(item=>item.total);
+ const count=totals.length;
+ const parts=['rain','snow'].map((key,index)=>{
+  const amounts=totals.map(item=>item.total[key]);
+  const votes=amounts.filter(x=>x>=0.1).length;
+  if (!votes) return '';
+  const amount=(amounts.reduce((sum,x)=>sum+x,0)/count).toLocaleString('sv-SE',{maximumFractionDigits:1});
+  return (index?'Nysnö ':'Regn ')+amount+(index?' cm':' mm')+' · '+(count>1?Math.round(100*votes/count)+' % ('+votes+'/'+count+')':'1 modell');
+ }).filter(Boolean);
+ const summary=parts.length?parts.join('　|　'):count?'Ingen mätbar nederbörd'+(count>1?' · 100 % ('+count+'/'+count+')':' · 1 modell'):longLoading?'Hämtar prognoser …':'Underlag saknas för hela veckan';
+ const label=number===1?'Dag 1–7':'Dag 8–14';
+ const modelNames=totals.map(item=>item.model.label).join(', ');
+ return '<tr class="weekPrecip"><td colspan="'+(LONG_MODELS.length+2)+'"><strong>'+label+' · Nederbörd</strong><br>'+summary+(count?'<br><small title="'+modelNames+'">Medelmängd · '+count+' av '+LONG_MODELS.length+' modeller täcker veckan. Procent = andel som väntar regn respektive snö.</small>':'')+'</td></tr>';
+}
 function renderLongDays(){
  const days=next14Dates();
  const thead=LONG_MODELS.map(m=>`<th scope="col"><button type="button" class="modelHeaderButton" data-model="${m.id}" aria-controls="sourceDetail" aria-expanded="${chosenModel===m.id}" title="Läs om ${m.label}">${m.label}<span class="modelCaption">${m.sub}</span></button></th>`).join('');
@@ -1398,7 +1451,7 @@ function renderLongDays(){
   const d=new Date(key+'T12:00:00Z');
   const date=CAL_SHORT.format(d);
   const cells=matches.map(x=>longCell(x.data,x.model,key)).join('');
-  return `<tr><td class="dateCol"><span class="dayWord">${day[0].toUpperCase()+day.slice(1)}</span><span class="dayNumber">${date}</span></td>${cells}<td class="scoreCol" title="Viktad jämförelse mellan olika modellfamiljer, inte träffsannolikhet"><span class="longScore ${score===null?'missing':''}">${score===null?'—':score+' %'}</span></td></tr>`;
+  return `<tr><td class="dateCol"><span class="dayWord">${day[0].toUpperCase()+day.slice(1)}</span><span class="dayNumber">${date}</span></td>${cells}<td class="scoreCol" title="Viktad jämförelse mellan olika modellfamiljer, inte träffsannolikhet"><span class="longScore ${score===null?'missing':''}">${score===null?'—':score+' %'}</span></td></tr>`+(i===6||i===13?weekRow(days.slice(i-6,i+1),i===6?1:2):'');
  }).join('');
  $('longDays').innerHTML=`<table class="longTable" aria-label="14 dagars prognoser för vald ort med viktad enighet"><thead><tr><th scope="col" class="dayH">Dag</th>${thead}<th scope="col" class="scoreH">Enighet</th></tr></thead><tbody>${body}</tbody></table>`;
  renderLongPreview();
@@ -1646,11 +1699,12 @@ function showCloudFrame(){if(!cloudFrames.length)return;labelFrame();if(cloudMod
 
 PLACES.push(...RESORTS,
  {id:'se-lidkoping',group:'se',name:'Lidköping',lat:58.505,lon:13.158,tz:'Europe/Stockholm',nordic:true,area:'Västra Götalands län'},
+ {id:'sun-puerto-rico',group:'sun',name:'Puerto Rico, Gran Canaria',lat:27.789,lon:-15.711,tz:'Atlantic/Canary',nordic:false,cloudMap:true,area:'Spanien'},
  {id:'sun-las-palmas',group:'sun',name:'Las Palmas - Gran Canaria',lat:28.124,lon:-15.431,tz:'Atlantic/Canary',nordic:false,cloudMap:true,area:'Spanien'}
 );
 function createCitySelector(){
  const select=$('citySelect');
- const favorites=['se-orebro','se-lidkoping','sun-las-palmas'];
+ const favorites=['se-orebro','se-lidkoping','sun-las-palmas','sun-puerto-rico'];
  for(const id of favorites){
   const place=PLACES.find(p=>p.id===id);
   select.add(new Option(place.name,place.id));
