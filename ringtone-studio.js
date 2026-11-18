@@ -12,8 +12,9 @@
     <p id="ringtoneStatus" role="status"></p>
     <fieldset id="ringtoneControls" disabled>
       <legend>Klipp och tona ljudet · högst 29,9 sekunder</legend>
-      <p>Dra handtagen för att välja delen du vill spara.</p>
+      <p>När videon har lästs in kan du dra handtagen, lyssna på markeringen och spara den som ringsignal.</p>
       <div id="ringtoneWave" class="ringtoneWave">
+        <span id="ringtonePlaceholder">Här visas ljudets vågform när du har valt en video.</span>
         <canvas id="ringtoneCanvas" width="1000" height="160" aria-label="Ljudets vågform"></canvas>
         <div id="ringtoneRegion" class="ringtoneRegion"></div>
         <button type="button" id="ringtoneStartHandle" class="waveHandle" role="slider" aria-label="Markeringens start" aria-valuemin="0" aria-valuemax="0" aria-valuenow="0">↔</button>
@@ -25,16 +26,17 @@
         <label>Intoning (sekunder)<input id="ringtoneFadeIn" type="number" min="0" step="0.1" value="0" inputmode="decimal"></label>
         <label>Uttoning (sekunder)<input id="ringtoneFadeOut" type="number" min="0" step="0.1" value="1" inputmode="decimal"></label>
       </div>
+      <label>Filformat <select id="ringtoneFormat"><option value="mp3">MP3</option><option value="m4a">M4A (AAC)</option></select></label>
       <p id="ringtoneLength"></p>
       <div class="studioActions"><button type="button" id="ringtonePreview">▶ Lyssna på klippet</button><button type="button" id="ringtoneExport">Skapa ringsignal</button></div>
     </fieldset>
     <audio id="ringtoneAudio" controls hidden aria-label="Förhandslyssna med toningar"></audio>
-    <div class="studioActions" id="ringtoneDownload" hidden><a download="ringsignal.wav">Spara ringsignalen</a><button type="button" id="ringtoneShare" hidden>Dela ringsignalen</button></div>
+    <div class="studioActions" id="ringtoneDownload" hidden><a download="ringsignal.mp3">Spara ringsignalen</a><button type="button" id="ringtoneShare" hidden>Dela ringsignalen</button></div>
     <details id="ringtoneInstall" hidden><summary>Nästa steg: använd ringsignalen på din iPhone</summary>
       <ol><li>Spara ringsignalen i appen Filer.</li><li>Öppna Filer och håll fingret på den sparade filen.</li><li>Tryck på Dela och välj Använd som ringsignal. Det här alternativet finns i iOS 26 och senare för ljudfiler som stöds.</li></ol>
       <p>Om alternativet saknas, öppna filen och prova delningsknappen där. Prova också att göra klippet kortare än 30 sekunder.</p>
-      <p><a href="https://support.apple.com/sv-se/120692" target="_blank" rel="noopener noreferrer">Alternativ: Apples instruktion för ringsignal via GarageBand</a></p>
     </details>
+      <p><a href="https://support.apple.com/sv-se/120692" target="_blank" rel="noopener noreferrer">Alternativ: Apples instruktion för ringsignal via GarageBand</a></p>
     <p><a href="https://support.apple.com/sv-se/102653" target="_blank" rel="noopener noreferrer">Apple: så gör du en skärminspelning</a></p>`;
   document.querySelector('.proteinCard').after(panel);
   const $=id=>panel.querySelector('#'+id);
@@ -47,8 +49,12 @@
   function drawWave(){
     const ctx=canvas.getContext('2d');
     ctx.clearRect(0,0,1000,160);
-    wave.hidden=!buffer;
-    if(!buffer||!peaks)return;
+    $('ringtonePlaceholder').hidden=!!buffer;
+    $('ringtoneRegion').hidden=!buffer;
+    if(!buffer||!peaks){
+      handles[0].style.left='0%';handles[1].style.left='100%';
+      return;
+    }
     const start=fields[0].valueAsNumber,end=fields[1].valueAsNumber;
     const valid=Number.isFinite(start)&&Number.isFinite(end)&&end>start;
     ctx.strokeStyle='#927ba9';ctx.beginPath();
@@ -145,7 +151,7 @@
     try{
       const AudioContext=window.AudioContext||window.webkitAudioContext;
       if(!AudioContext)throw new Error('Webbläsaren saknar stöd för ljudbearbetning.');
-      context ||= new AudioContext();
+      context ||= new AudioContext({sampleRate:44100});
       const decoded=await context.decodeAudioData(await file.arrayBuffer());
       if(ticket!==generation)return;
       if(!decoded.numberOfChannels||decoded.duration<=0)throw new Error('Filen saknar ljud.');
@@ -160,22 +166,67 @@
     }
   });
   drawWave();
-  function prepare(){
-    clearOutput();
-    const wav=InfluencerTools.encodeWav(selection());
-    exportFile=new File([wav],'ringsignal.wav',{type:'audio/wav'});
-    url=URL.createObjectURL(exportFile);audio.src=url;audio.hidden=false;
+  function mp3File(clip){
+    const encoder=new lamejs.Mp3Encoder(clip.channels.length,clip.sampleRate,128);
+    const parts=[];
+    for(let offset=0;offset<clip.length;offset+=1152){
+      const blocks=clip.channels.map(channel=>Int16Array.from(channel.subarray(offset,offset+1152),
+        sample=>Math.round(Math.max(-1,Math.min(1,sample))*(sample<0?32768:32767))));
+      const packet=encoder.encodeBuffer(...blocks);
+      if(packet.length)parts.push(packet);
+    }
+    parts.push(encoder.flush());
+    return new File(parts,'ringsignal.mp3',{type:'audio/mpeg'});
   }
-  $('ringtonePreview').addEventListener('click',async()=>{
-    try{prepare();await audio.play();}catch(error){status.textContent='Kunde inte spela klippet: '+error.message;}
-  });
-  $('ringtoneExport').addEventListener('click',()=>{
+  const aacType=['audio/mp4;codecs=mp4a.40.2'].find(type=>window.MediaRecorder?.isTypeSupported(type));
+  $('ringtoneFormat').options[1].disabled=!aacType;
+  function audioBuffer(clip){
+    const data=context.createBuffer(clip.channels.length,clip.length,clip.sampleRate);
+    clip.channels.forEach((channel,i)=>data.copyToChannel(channel,i));
+    return data;
+  }
+  async function m4aFile(clip){
+    await context.resume();
+    const dst=context.createMediaStreamDestination();
+    const source=context.createBufferSource();
+    source.buffer=audioBuffer(clip);source.connect(dst);
+    const parts=[];
     try{
-      prepare();$('ringtoneDownload').querySelector('a').href=url;$('ringtoneDownload').hidden=false;
-      $('ringtoneShare').hidden=!(navigator.canShare&&navigator.canShare({files:[exportFile]}));
+      const recorder=new MediaRecorder(dst.stream,{mimeType:aacType,audioBitsPerSecond:128000});
+      await new Promise((resolve,reject)=>{
+        recorder.ondataavailable=e=>{if(e.data.size)parts.push(e.data);};
+        recorder.onerror=e=>reject(e.error||new Error('M4A-exporten misslyckades.'));
+        recorder.onstop=resolve;
+        source.onended=()=>{if(recorder.state==='recording')recorder.stop();};
+        recorder.start();source.start();
+      });
+      if(!parts.length)throw new Error('Ingen ljudfil skapades. Prova MP3.');
+      return new File(parts,'ringsignal.m4a',{type:'audio/mp4'});
+    }finally{source.disconnect();dst.stream.getTracks().forEach(track=>track.stop());}
+  }
+  function present(file){
+    exportFile=file;url=URL.createObjectURL(file);audio.src=url;audio.hidden=false;
+  }
+  $('ringtoneFormat').addEventListener('change',clearOutput);
+  $('ringtonePreview').addEventListener('click',async()=>{
+    try{clearOutput();present(mp3File(selection()));await audio.play();}catch(error){status.textContent='Kunde inte spela klippet: '+error.message;}
+  });
+  $('ringtoneExport').addEventListener('click',async()=>{
+    const ticket=generation;
+    try{
+      clearOutput();
+      const clip=selection(), format=$('ringtoneFormat').value;
+      controls.disabled=true;status.textContent='Skapar '+format.toUpperCase()+' …';
+      const file=format==='m4a'?await m4aFile(clip):mp3File(clip);
+      if(ticket!==generation)return;
+      present(file);
+      const link=$('ringtoneDownload').querySelector('a');
+      link.download=file.name;link.href=url;$('ringtoneDownload').hidden=false;
+      $('ringtoneShare').hidden=!(navigator.canShare&&navigator.canShare({files:[file]}));
       $('ringtoneInstall').hidden=false;$('ringtoneInstall').open=true;
-      status.textContent='Din ringsignal är klar. Spara den i Filer och följ nästa steg nedan.';
-    }catch(error){status.textContent=error.message;}
+      status.textContent='Din ringsignal är klar. Spara den i Filer.';
+    }catch(error){if(ticket===generation)status.textContent=error.message;}
+    finally{if(ticket===generation)controls.disabled=!buffer;}
   });
   $('ringtoneShare').addEventListener('click',async()=>{
     if(!exportFile)return;
