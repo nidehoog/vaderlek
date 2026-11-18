@@ -1,3 +1,4 @@
+(() => {
 const converter = document.querySelector('#converter');
 const body = document.querySelector('#converterBody');
 let loading = false;
@@ -104,7 +105,7 @@ function closeFractal() {
   panel.classList.remove('expanded');
   document.querySelector('.studioEgg')?.setAttribute('aria-expanded','false');
 }
-function toggleFractal(egg) {
+window.toggleFractal = function toggleFractal(egg) {
   if (!panel.hidden) return closeFractal();
   for (const api of [window.DeviceOrientationEvent,window.DeviceMotionEvent]) {
     if (api?.requestPermission) api.requestPermission().catch(()=>{});
@@ -127,7 +128,7 @@ function toggleFractal(egg) {
     frameRequest = requestAnimationFrame(draw);
   };
   draw();
-}
+};
 canvas.addEventListener('click', () => {
   if (tapTimer) {
     clearTimeout(tapTimer);
@@ -142,3 +143,4 @@ document.querySelector('#viewMode').addEventListener('change',closeFractal);
 document.addEventListener('visibilitychange',()=>{
   if (document.hidden && worker) closeFractal();
 });
+})();

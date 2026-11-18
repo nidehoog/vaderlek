@@ -1,4 +1,4 @@
-const cacheName = 'vaderlek-2.18.0-shell-v1';
+const cacheName = 'vaderlek-2.18.0-shell-v2';
 const files = ['index.html', 'nearest.js', 'influencer-tools.js?v=2.15.0', 'influencer-extras.js', 'fractal-worker.js', 'outfit.js?v=2.18', 'outfit.css?v=2.18', 'manifest.webmanifest', 'vadergungan-180.png', 'vadergungan-192.png', 'vadergungan-512.png'];
 const assets = files.map(file => new URL(file, self.registration.scope).href);
 self.addEventListener('install', event => {
