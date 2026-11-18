@@ -85,6 +85,7 @@ test('All JS including existing inline scripts parses',()=>{
   for(const file of fs.readdirSync(root).filter(f=>f.endsWith('.js')))new vm.Script(fs.readFileSync(path.join(root,file),'utf8'),{filename:file});
   const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
   for(const m of html.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/g))new vm.Script(m[1]);
-  assert.ok(html.indexOf('influencer-tools.js?v=')<html.indexOf('ringtone-studio.js?v='));
-  assert.ok(html.indexOf('ringtone-studio.js?v=')<html.indexOf('outfit.js?v='));
+  assert.ok(html.indexOf('influencer-tools.js?v=')<html.indexOf('influencer-extras.js'));
+  assert.ok(html.indexOf('influencer-extras.js')<html.indexOf('outfit.js?v='));
 });
+
