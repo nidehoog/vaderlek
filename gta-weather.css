@@ -1,0 +1,16 @@
+#gtaWeather{display:none}
+body[data-view=gta6] .shell>:not(.header):not(#gtaWeather),body[data-view=gta6] .appTabbar,body[data-view=gta6] .locationPrivacy{display:none!important}
+body[data-view=gta6] .header{position:static}
+body[data-view=gta6] #gtaWeather{display:block;box-sizing:border-box;max-width:540px;min-height:100svh;margin:0 auto;padding-bottom:2rem;color:#f6f2e9;background:linear-gradient(175deg,#395f85,#36739f 48%,#19456c 88%,#24547b);font:600 clamp(15px,4vw,20px)/1.25 Arial,sans-serif;color-scheme:light}
+#gtaWeather .place{text-align:center;margin:0;background:linear-gradient(110deg,#294966,#324e75);padding:.65em;font-size:1.35em}
+#gtaWeather .now{padding:1em;background:linear-gradient(165deg,#385b80,#3f739e 72%,#5189ae)}
+#gtaWeather .reading,#gtaWeather .row{display:flex;align-items:center;justify-content:space-between}
+#gtaWeather .reading{font-size:4.8em;font-weight:400;line-height:1.12}
+#gtaWeather .reading span:last-child{font-size:.65em}
+#gtaWeather .hours{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.3em;padding:.8em .85em .4em;text-align:center}
+#gtaWeather .hour{display:grid;gap:.8em;padding:.65em .08em;border-radius:5px;background:linear-gradient(transparent,#5181a3);font-size:.88em}
+#gtaWeather .hour b{font-size:1.55em}
+#gtaWeather .box{margin:0 .85em .4em;overflow:hidden;border-radius:5px;background:linear-gradient(110deg,#386b90,#315d80)}
+#gtaWeather h3{margin:0;text-align:center;font-size:1em;padding:.42em;background:linear-gradient(#628ba4,#4b7999)}
+#gtaWeather .row{padding:.4em .8em;border-bottom:1px solid #ffffff12}
+#gtaWeather sup{font-size:.55em}
