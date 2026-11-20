@@ -31,7 +31,7 @@ converter.addEventListener('toggle', async () => {
       const units = categories[category.selectedIndex].units;
       if (to.value === from.value) to.value = units.find(u => u.slug !== from.value).slug;
       for (const option of to.options) option.disabled = option.value === from.value;
-      frame.src = 'https://konvertera.nu/sv/omvandla/embed/' + category.value + '/' + from.value + '-till-' + to.value + '/';
+      frame.src = 'https://konvertera.nu/sv/omvandla/embed/' + category.value + '/' + from.value + '-till-' + to.value + '/#theme=light&bg=transparent&border=off';
     }
     function populate() {
       const units = categories[category.selectedIndex].units;
