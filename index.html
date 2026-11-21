@@ -800,6 +800,7 @@ body[data-view="netscape"] #netscapeLegacy #legacyNow{white-space:pre-line;line-
     <p class="historyExplain">Historiskt modellunderlag från ECMWF IFS, ERA5-Land och ERA5 via Open-Meteo. Dessa är <strong>återanalyser</strong> av vädret baserade på observationer och modeller – inte direkta mätningar på den exakta platsen. Saknade värden visas som —. Nederbörd före datumet avser de tre föregående kalenderdygnen.</p>
     </div>
   </section>
+  <details id="auroraForecast"><summary>Norrsken</summary><iframe title="Lokal norrskensprognos" style="display:block;width:100%;height:25rem;border:0"></iframe></details>
   <section class="longSection" id="longSection" aria-label="Fjortondagars väderjämförelse">
     <button type="button" class="foldToggle longHeading" id="longToggle" aria-expanded="false" aria-controls="longExpanded">
       <span><h2>14-dygnsprognos</h2><small id="longLocation">Från i morgon · alla modeller sida vid sida · Örebro</small></span>
@@ -2994,5 +2995,19 @@ resetHistoryForPlace();
  updateSkyline();
 })();
 </script>
-<p class="locationPrivacy">Platsknappen väljer närmaste ort i listan direkt på din enhet. Dina GPS-koordinater skickas aldrig till vädersidan eller dess tjänster och sparas inte på någon server av sidan. För prognosen används ortens koordinater. Platsfunktionen använder inga cookies.</p><script src="./nearest.js"></script><script src="./influencer-tools.js?v=2.15.0"></script><script src="./mandelbrot.js"></script><script src="./outfit.js?v=2.19.0"></script><script src="./converter.js?v=2.20"></script><script src="./gta-weather.js"></script></body>
+<p class="locationPrivacy">Platsknappen väljer närmaste ort i listan direkt på din enhet. Dina GPS-koordinater skickas aldrig till vädersidan eller dess tjänster och sparas inte på någon server av sidan. För prognosen används ortens koordinater. Platsfunktionen använder inga cookies.</p><script src="./nearest.js"></script><script src="./influencer-tools.js?v=2.15.0"></script><script src="./mandelbrot.js"></script><script src="./outfit.js?v=2.19.0"></script><script src="./converter.js?v=2.20"></script><script src="./gta-weather.js"></script><script>
+(() => {
+ const panel=document.getElementById('auroraForecast'), frame=panel.querySelector('iframe');
+ function update(){
+   const place=selectedEarthPlace();
+   panel.hidden=place.lat<=0;
+   if(panel.hidden||!panel.open){frame.removeAttribute('src');return;}
+   const url='norrsken-test.html?ort='+encodeURIComponent(place.id);
+   if(frame.getAttribute('src')!==url)frame.src=url;
+ }
+ document.getElementById('citySelect').addEventListener('change',update);
+ panel.addEventListener('toggle',update);
+ update();
+})();
+</script></body>
 </html>
