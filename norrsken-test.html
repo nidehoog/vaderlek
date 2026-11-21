@@ -1,0 +1,39 @@
+<!doctype html><html lang="sv"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Norrsken – test</title>
+<style>body{font:1rem/1.55 system-ui;background:#102534;color:#eff8ff;max-width:36rem;margin:2rem auto;padding:1rem}select{font:inherit;padding:.4rem}img{width:100%;height:auto}a{color:#a7dfdf}output{display:block;margin:1rem 0}</style>
+<h1>Norrsken</h1><label>Ort <select id="place"><option>Örebro</option><option>Kiruna</option><option>Puerto Rico, Gran Canaria</option></select></label>
+<output id="result" aria-live="polite"></output>
+<details id="map"><summary>Regional prognos för Norden från FMI</summary><a href="https://space.fmi.fi/image/realtime/SSA/RAF_SSA/raf_ssa_esc.php">Öppna FMI:s prognos</a></details>
+<script>
+const places=[[59.27,15.21,'Europe/Stockholm'],[67.86,20.23,'Europe/Stockholm'],[27.79,-15.71,'Atlantic/Canary']];
+const selector=document.querySelector('#place'), result=document.querySelector('#result'), map=document.querySelector('#map');
+let request;
+async function json(url,signal){const response=await fetch(url,{signal});if(!response.ok)throw Error();return response.json()}
+async function show(){
+  request?.abort();request=new AbortController();
+  const signal=request.signal;
+  const [lat,lon,zone]=places[selector.selectedIndex];
+  map.hidden=selector.selectedIndex===2;
+  result.textContent='Hämtar aktivitet och molntäcke…';
+  const weather=new URLSearchParams({latitude:lat,longitude:lon,hourly:'cloud_cover,is_day',timeformat:'unixtime',forecast_days:2});
+  const [oval,sky]=await Promise.allSettled([json('https://services.swpc.noaa.gov/json/ovation_aurora_latest.json',signal),json('https://api.open-meteo.com/v1/forecast?'+weather,signal)]);
+  if(signal.aborted)return;
+  const data=oval.value;
+  const forecast=Date.parse(data?.['Forecast Time']);
+  const fresh=Number.isFinite(forecast)&&Math.abs(Date.now()-forecast)<2*3600000;
+  const validTime=fresh?forecast:Date.now();
+  const cell=data?.coordinates?.find(([x,y])=>x===(Math.round(lon)+360)%360 && y===Math.round(lat));
+  const hours=sky.value?.hourly;
+  const i=hours?.time.indexOf(Math.floor(validTime/3600000)*3600)??-1;
+  const clouds=hours?.cloud_cover[i], daylight=hours?.is_day[i];
+  const rows=[];
+  if(daylight===1)rows.push('Dagsljus vid prognostiden.');
+  else if(Number.isFinite(clouds)&&clouds>=85)rows.push('Molnen skymmer större delen av himlen.');
+  if(fresh&&cell)rows.push('NOAA:s modellvärde för norrsken rakt ovanför orten: '+cell[2]+' %.');
+  else rows.push('Aktuell norrskensprognos saknas.');
+  rows.push(Number.isFinite(clouds)?'Molntäcke: '+clouds+' %.':'Molnuppgift saknas.');
+  rows.push('Lokal prognostid: '+new Intl.DateTimeFormat('sv-SE',{timeZone:zone,dateStyle:'short',timeStyle:'short'}).format(validTime));
+  result.replaceChildren(...rows.map(text=>{const p=document.createElement('p');p.textContent=text;return p}));
+}
+map.addEventListener('toggle',()=>{if(map.open&&!map.querySelector('img')){const img=new Image();img.alt='FMI:s regionala norrskenskarta';img.src='https://space.fmi.fi/image/realtime/SSA/RAF_SSA/mergedMaps/mergedMap_00.png';map.append(img)}});
+selector.addEventListener('change',show);show();
+</script></html>
