@@ -80,3 +80,12 @@ body[data-view="netscape"] .shell {padding-top:calc(18px + env(safe-area-inset-t
 .ringtoneStudio .waveHandle{position:absolute;top:50%;transform:translate(-50%,-50%);width:44px;height:54px;padding:0;background:#5c347c;color:white;touch-action:none;z-index:1}
 
 #ringtonePlaceholder{position:absolute;inset:0 24px;display:grid;place-items:center;text-align:center;color:#563a6d;padding:8px;pointer-events:none}
+
+.goldenCard{box-sizing:border-box;width:min(100%,22rem);margin-inline:auto;text-align:left;padding:1.4rem}
+.goldenCard summary{cursor:pointer;min-height:44px;align-content:center}
+.goldenCard summary h2{display:inline;font-size:clamp(1.4rem,5vw,1.85rem);margin:0}
+.goldenCard details p{line-height:1.5;margin:.55rem 0 0}
+.goldenTimes p{margin:0;padding:1rem 0 0}
+.goldenTimes p+p{border-top:1px solid #21133930;margin-top:1rem}
+.goldenTimes strong{font-size:clamp(1.55rem,6vw,2rem);font-variant-numeric:tabular-nums}
+.goldenTimes small{font-size:.95rem;margin-top:.2rem}
