@@ -81,11 +81,12 @@ body[data-view="netscape"] .shell {padding-top:calc(18px + env(safe-area-inset-t
 
 #ringtonePlaceholder{position:absolute;inset:0 24px;display:grid;place-items:center;text-align:center;color:#563a6d;padding:8px;pointer-events:none}
 
-.goldenCard{box-sizing:border-box;width:min(100%,22rem);margin-inline:auto;text-align:left;padding:1.4rem}
+.goldenCard{box-sizing:border-box;text-align:center;padding:clamp(1.5rem,5vw,3rem) 1rem}
 .goldenCard summary{cursor:pointer;min-height:44px;align-content:center}
-.goldenCard summary h2{display:inline;font-size:clamp(1.4rem,5vw,1.85rem);margin:0}
-.goldenCard details p{line-height:1.5;margin:.55rem 0 0}
-.goldenTimes p{margin:0;padding:1rem 0 0}
-.goldenTimes p+p{border-top:1px solid #21133930;margin-top:1rem}
-.goldenTimes strong{font-size:clamp(1.55rem,6vw,2rem);font-variant-numeric:tabular-nums}
-.goldenTimes small{font-size:.95rem;margin-top:.2rem}
+.goldenCard summary h2{display:inline;font-size:clamp(1.7rem,7vw,3.4rem);margin:0}
+.goldenCard details p{line-height:1.5;max-width:32ch;margin:.75rem auto}
+.goldenTimes p{display:grid;justify-items:center;gap:.35rem;margin:0;padding:1.3rem 0 .5rem}
+.goldenTimes p+p{border-top:1px solid #21133930;margin:1rem auto 0}
+.goldenTimes .goldenIcon{font-size:clamp(3.25rem,16vw,6rem);line-height:1.15}
+.goldenTimes strong{font-size:clamp(2rem,10vw,4.75rem);line-height:1.1;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.goldenTimes small{font-size:1rem;margin:0}

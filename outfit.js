@@ -56,7 +56,11 @@
       const minutes=Math.round((period.end-period.start)/60000);
       const duration=[Math.floor(minutes/60) && Math.floor(minutes/60)+' tim', minutes%60 && minutes%60+' min'].filter(Boolean).join(' ') || '0 min';
       detail.textContent=status ? status.replace('⏳ Gyllene timmen om','Börjar om') : duration;
-      row.append(label,hours,detail);
+      const icon=document.createElement('span');
+      icon.className='goldenIcon';
+      icon.setAttribute('aria-hidden','true');
+      icon.textContent=period.partial ? '☀️' : period.label==='Morgon' ? '🌅' : '🌇';
+      row.append(icon,label,hours,detail);
       return row;
     }));
     if(!panel._periods.length)panel.querySelector('.goldenTimes').textContent='Ingen gyllene timme på den här orten i dag.';
@@ -127,7 +131,7 @@
     const golden=document.createElement('article');
     golden.className='goldenCard';
     golden.setAttribute('aria-label','Gyllene timmen');
-    golden.innerHTML='<details><summary><h2>Gyllene timmen</h2></summary><p>Gyllene timmen är stunden på morgonen och kvällen när solen står lågt. Då kan ljuset bli varmt och mjukt och skuggorna långa. Hur länge det varar beror på plats och årstid. Moln kan dämpa ljuset.</p></details><div class="goldenTimes"></div>';
+    golden.innerHTML='<details><summary><h2>Gyllene timmen</h2></summary><p>Inom fotografering kallas stunden då solen står lågt på morgonen eller kvällen för gyllene timmen. Då kan ljuset bli varmt och mjukt och skuggorna långa. Hur länge det varar beror på plats och årstid. Moln kan dämpa ljuset.</p></details><div class="goldenTimes"></div>';
     cards.append(golden);
     updateGolden(golden,place);
     goldenTimer=setInterval(()=>{
