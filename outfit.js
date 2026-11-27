@@ -47,11 +47,17 @@
     panel.querySelector('.goldenTimes').replaceChildren(...panel._periods.map(period=>{
       const row=document.createElement('p');
       const status=InfluencerTools.goldenStatus(period,now);
-      const heading=document.createElement('strong');
-      heading.textContent=period.label+' · '+(status ? status.replace('Gyllene timmen','Fotoljus').replace('min kvar','minuter kvar med fotoljus') : '✨ Perfekt fotoljus i '+Math.round((period.end-period.start)/60000)+' minuter');
-      const direction=document.createElement('small');
-      direction.textContent=time(period.start)+'–'+time(period.end)+' · Mot '+InfluencerTools.compassWords(period.azimuth);
-      row.append(heading,direction);return row;
+      const label=document.createElement('span');
+      const direction=InfluencerTools.compassWords(period.azimuth);
+      label.textContent=period.label+' · '+direction[0].toUpperCase()+direction.slice(1);
+      const hours=document.createElement('strong');
+      hours.textContent=time(period.start)+'–'+time(period.end);
+      const detail=document.createElement('small');
+      const minutes=Math.round((period.end-period.start)/60000);
+      const duration=[Math.floor(minutes/60) && Math.floor(minutes/60)+' tim', minutes%60 && minutes%60+' min'].filter(Boolean).join(' ') || '0 min';
+      detail.textContent=status ? status.replace('⏳ Gyllene timmen om','Börjar om') : duration;
+      row.append(label,hours,detail);
+      return row;
     }));
     if(!panel._periods.length)panel.querySelector('.goldenTimes').textContent='Ingen gyllene timme på den här orten i dag.';
   }
@@ -121,7 +127,7 @@
     const golden=document.createElement('article');
     golden.className='goldenCard';
     golden.setAttribute('aria-label','Gyllene timmen');
-    golden.innerHTML='<h2>🌅 Gyllene timmen</h2><div class="goldenTimes" aria-live="polite"></div><small>Bästa tiden för mjukt, varmt fotoljus. Moln kan påverka ljuset.</small>';
+    golden.innerHTML='<details><summary><h2>Gyllene timmen</h2></summary><p>Gyllene timmen är stunden på morgonen och kvällen när solen står lågt. Då kan ljuset bli varmt och mjukt och skuggorna långa. Hur länge det varar beror på plats och årstid. Moln kan dämpa ljuset.</p></details><div class="goldenTimes"></div>';
     cards.append(golden);
     updateGolden(golden,place);
     goldenTimer=setInterval(()=>{
