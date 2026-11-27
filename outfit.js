@@ -37,6 +37,64 @@
   let active;
   let goldenTimer;
   let renderedDate;
+  function periodSun(period) {
+    const sun=document.createElement('span');
+    sun.className='periodSun'+(period.label==='Kväll'?' orangeSun':'');
+    sun.textContent='☀︎';
+    sun.setAttribute('role','img');
+    sun.setAttribute('aria-label',period.label+' · '+InfluencerTools.compassWords(period.azimuth));
+    return sun;
+  }
+
+  function openSolarCompass(periods, viewSignal) {
+    const dialog=document.createElement('dialog');
+    dialog.className='solarCompass';
+    dialog.setAttribute('aria-label','Solkompass');
+    dialog.innerHTML='<button type="button" aria-label="Stäng kompassen">×</button><div class="compassFace"><div class="compassRose"></div></div><small>Norr uppåt</small>';
+    const rose=dialog.querySelector('.compassRose');
+    const status=dialog.querySelector('small');
+    function placeMark(mark,bearing,radius) {
+      const angle=bearing*Math.PI/180;
+      mark.style.left=(50+radius*Math.sin(angle))+'%';
+      mark.style.top=(50-radius*Math.cos(angle))+'%';
+      rose.append(mark);
+    }
+    ['N','Ö','S','V'].forEach((word,index)=>{
+      const mark=document.createElement('b');
+      mark.textContent=word;
+      placeMark(mark,index*90,43);
+    });
+    periods.forEach((period,index)=>placeMark(periodSun(period),period.azimuth,index%2?24:33));
+    const session=new AbortController();
+    const close=()=>dialog.close();
+    dialog.addEventListener('close',()=>{
+      session.abort();
+      viewSignal.removeEventListener('abort',close);
+      dialog.remove();
+    },{once:true});
+    viewSignal.addEventListener('abort',close,{once:true});
+    dialog.querySelector('button').onclick=close;
+    document.body.append(dialog);
+    dialog.showModal();
+    function track(event) {
+      const angle=screen.orientation?.angle ?? window.orientation ?? 0;
+      let heading=event.webkitCompassHeading;
+      if (Number.isFinite(heading) && heading>=0) heading+=angle;
+      else if (event.absolute && Number.isFinite(event.alpha)) heading=360-event.alpha+angle;
+      else return;
+      rose.style.transform='rotate('+(-heading)+'deg)';
+      rose.style.setProperty('--upright',heading+'deg');
+      status.textContent='Kompassriktning';
+    }
+    async function start() {
+      const orientation=window.DeviceOrientationEvent;
+      if (orientation?.requestPermission && await orientation.requestPermission()!=='granted') return;
+      if (session.signal.aborted || !dialog.open) return;
+      for (const type of ['deviceorientation','deviceorientationabsolute'])
+        window.addEventListener(type,track,{signal:session.signal});
+    }
+    start().catch(()=>{}); // Behåll norr uppåt när sensorn är otillgänglig.
+  }
   function updateGolden(panel, place) {
     const now=Date.now(), key=InfluencerTools.dateKey(now,place.tz);
     if(panel.dataset.date!==key){
@@ -49,18 +107,14 @@
       const status=InfluencerTools.goldenStatus(period,now);
       const label=document.createElement('span');
       const direction=InfluencerTools.compassWords(period.azimuth);
-      label.textContent=period.label+' · '+direction[0].toUpperCase()+direction.slice(1);
+      label.textContent=direction[0].toUpperCase()+direction.slice(1);
       const hours=document.createElement('strong');
       hours.textContent=time(period.start)+'–'+time(period.end);
       const detail=document.createElement('small');
       const minutes=Math.round((period.end-period.start)/60000);
       const duration=[Math.floor(minutes/60) && Math.floor(minutes/60)+' tim', minutes%60 && minutes%60+' min'].filter(Boolean).join(' ') || '0 min';
       detail.textContent=status ? status.replace('⏳ Gyllene timmen om','Börjar om') : duration;
-      const icon=document.createElement('span');
-      icon.className='goldenIcon';
-      icon.setAttribute('aria-hidden','true');
-      icon.textContent=period.partial ? '☀️' : period.label==='Morgon' ? '🌅' : '🌇';
-      row.append(icon,label,hours,detail);
+      row.append(periodSun(period),label,hours,detail);
       return row;
     }));
     if(!panel._periods.length)panel.querySelector('.goldenTimes').textContent='Ingen gyllene timme på den här orten i dag.';
@@ -132,6 +186,14 @@
     golden.className='goldenCard';
     golden.setAttribute('aria-label','Gyllene timmen');
     golden.innerHTML='<details><summary><h2>Gyllene timmen</h2></summary><p>Inom fotografering kallas stunden då solen står lågt på morgonen eller kvällen för gyllene timmen. Då kan ljuset bli varmt och mjukt och skuggorna långa. Hur länge det varar beror på plats och årstid. Moln kan dämpa ljuset.</p></details><div class="goldenTimes"></div>';
+    const compass=document.createElement('button');
+    compass.type='button';
+    compass.className='openSolarCompass';
+    compass.textContent='🧭';
+    compass.setAttribute('aria-label','Öppna solkompassen');
+    compass.setAttribute('aria-haspopup','dialog');
+    compass.onclick=()=>openSolarCompass(golden._periods,signal);
+    golden.prepend(compass);
     cards.append(golden);
     updateGolden(golden,place);
     goldenTimer=setInterval(()=>{
