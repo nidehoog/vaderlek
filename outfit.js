@@ -131,7 +131,7 @@
     const golden=document.createElement('article');
     golden.className='goldenCard';
     golden.setAttribute('aria-label','Gyllene timmen');
-    golden.innerHTML='<details><summary><h2>Gyllene timmen</h2></summary><p>Gyllene timmen är stunden på morgonen och kvällen när solen står lågt. Då kan ljuset bli varmt och mjukt och skuggorna långa. Hur länge det varar beror på plats och årstid. Moln kan dämpa ljuset.</p></details><div class="goldenTimes"></div>';
+    golden.innerHTML='<details><summary><h2>Gyllene timmen</h2></summary><p>Inom fotografering kallas stunden då solen står lågt på morgonen eller kvällen för gyllene timmen. Då kan ljuset bli varmt och mjukt och skuggorna långa. Hur länge det varar beror på plats och årstid. Moln kan dämpa ljuset.</p></details><div class="goldenTimes"></div>';
     cards.append(golden);
     updateGolden(golden,place);
     goldenTimer=setInterval(()=>{
