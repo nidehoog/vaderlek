@@ -46,13 +46,13 @@
     return sun;
   }
 
-  function openSolarCompass(periods, viewSignal) {
-    const dialog=document.createElement('dialog');
-    dialog.className='solarCompass';
-    dialog.setAttribute('aria-label','Solkompass');
-    dialog.innerHTML='<button type="button" aria-label="Stäng kompassen">×</button><div class="compassFace"><div class="compassRose"></div></div><small>Norr uppåt</small>';
-    const rose=dialog.querySelector('.compassRose');
-    const status=dialog.querySelector('small');
+  function openSolarCompass(button,periods,viewSignal) {
+    button.classList.add('solarCompass');
+    button.setAttribute('aria-expanded','true');
+    button.setAttribute('aria-label','Stäng solkompassen');
+    button.innerHTML='<span class="compassFace"><span class="compassRose"></span></span><small>Norr uppåt</small>';
+    const rose=button.querySelector('.compassRose');
+    const status=button.querySelector('small');
     function placeMark(mark,bearing,radius) {
       const angle=bearing*Math.PI/180;
       mark.style.left=(50+radius*Math.sin(angle))+'%';
@@ -66,16 +66,17 @@
     });
     periods.forEach((period,index)=>placeMark(periodSun(period),period.azimuth,index%2?24:33));
     const session=new AbortController();
-    const close=()=>dialog.close();
-    dialog.addEventListener('close',()=>{
+    function close() {
       session.abort();
       viewSignal.removeEventListener('abort',close);
-      dialog.remove();
-    },{once:true});
+      button.removeEventListener('click',close);
+      button.classList.remove('solarCompass');
+      button.textContent='🧭';
+      button.setAttribute('aria-expanded','false');
+      button.setAttribute('aria-label','Öppna solkompassen');
+    }
     viewSignal.addEventListener('abort',close,{once:true});
-    dialog.querySelector('button').onclick=close;
-    document.body.append(dialog);
-    dialog.showModal();
+    button.addEventListener('click',close);
     function track(event) {
       const angle=screen.orientation?.angle ?? window.orientation ?? 0;
       let heading=event.webkitCompassHeading;
@@ -89,7 +90,7 @@
     async function start() {
       const orientation=window.DeviceOrientationEvent;
       if (orientation?.requestPermission && await orientation.requestPermission()!=='granted') return;
-      if (session.signal.aborted || !dialog.open) return;
+      if (session.signal.aborted) return;
       for (const type of ['deviceorientation','deviceorientationabsolute'])
         window.addEventListener(type,track,{signal:session.signal});
     }
@@ -191,9 +192,11 @@
     compass.className='openSolarCompass';
     compass.textContent='🧭';
     compass.setAttribute('aria-label','Öppna solkompassen');
-    compass.setAttribute('aria-haspopup','dialog');
-    compass.onclick=()=>openSolarCompass(golden._periods,signal);
-    golden.prepend(compass);
+    compass.setAttribute('aria-expanded','false');
+    compass.onclick=()=>{
+      if (compass.getAttribute('aria-expanded')==='false') openSolarCompass(compass,golden._periods,signal);
+    };
+    golden.append(compass);
     cards.append(golden);
     updateGolden(golden,place);
     goldenTimer=setInterval(()=>{

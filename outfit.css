@@ -87,20 +87,15 @@ body[data-view="netscape"] .shell {padding-top:calc(18px + env(safe-area-inset-t
 .goldenCard details p{line-height:1.5;max-width:32ch;margin:.75rem auto}
 .goldenTimes p{display:grid;justify-items:center;gap:.35rem;margin:0;padding:1.3rem 0 .5rem}
 .goldenTimes p+p{border-top:1px solid #21133930;margin:1rem auto 0}
-.goldenTimes .periodSun{font-size:clamp(3.25rem,16vw,6rem);line-height:1.15}
+.goldenTimes .periodSun,.goldenCard .openSolarCompass{font-size:clamp(3.25rem,16vw,6rem);line-height:1.15}
 .goldenTimes strong{font-size:clamp(2rem,10vw,4.75rem);line-height:1.1;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
 .goldenTimes small{font-size:1rem;margin:0}
 
-.goldenCard{position:relative}
-.goldenCard summary{padding-inline:2.5rem}
-.openSolarCompass,.solarCompass button{width:44px;height:44px;border:0;border-radius:50%;background:transparent;cursor:pointer;font-size:1.55rem;color:inherit}
-.openSolarCompass{position:absolute;right:.4rem;top:clamp(1.5rem,5vw,3rem)}
+.openSolarCompass{display:block;margin:1.25rem auto 0;padding:0;border:0;background:transparent;color:inherit;cursor:pointer}
 .periodSun{font-family:Georgia,serif;color:#ffe99a;-webkit-text-stroke:1px #7f552a}
 .periodSun.orangeSun{color:#ff943f}
-.solarCompass{box-sizing:border-box;width:min(90vw,24rem);padding:1rem;border:0;border-radius:24px;background:#fff0d6;color:#211339;text-align:center}
-.solarCompass::backdrop{background:#0b172ab3}
-.solarCompass button{display:block;margin-left:auto}
-.compassFace{position:relative;width:92%;aspect-ratio:1;margin:0 auto 1rem;border:2px solid #846848;border-radius:50%;background:repeating-conic-gradient(#997f61 0 1deg,transparent 1deg 15deg)}
+.goldenCard .openSolarCompass.solarCompass{width:min(100%,19rem);font-size:1rem;line-height:1.4}
+.compassFace{display:block;position:relative;width:92%;aspect-ratio:1;margin:0 auto 1rem;border:2px solid #846848;border-radius:50%;background:repeating-conic-gradient(#997f61 0 1deg,transparent 1deg 15deg)}
 .compassFace::before{content:"";position:absolute;inset:6%;background:#fff0d6;border-radius:50%}
 .compassFace::after{content:"";position:absolute;top:-5px;left:50%;transform:translateX(-50%);border-inline:5px solid transparent;border-top:12px solid #211339}
 .compassRose{position:absolute;inset:0}
